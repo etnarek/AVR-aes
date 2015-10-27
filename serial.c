@@ -8,15 +8,15 @@ void USART_init(void){
     UCSR0C = (3<<UCSZ00);
 }
 
-unsigned char USART_receive(void){
+unsigned char USART_receive(FILE *stream){
     while(!(UCSR0A & (1<<RXC0)));
     return UDR0;
 
 }
 
-void USART_send(const unsigned char data){
+void USART_send(const unsigned char data, FILE *stream){
     if (data == '\n')
-        USART_send('\r');
+        USART_send('\r', stream);
     while(!(UCSR0A & (1<<UDRE0)));
     UDR0 = data;
 
