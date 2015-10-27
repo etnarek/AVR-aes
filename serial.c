@@ -1,6 +1,5 @@
 #include "serial.h"
 
-
 void USART_init(void){
     UBRR0H = (uint8_t)(BAUD_PRESCALLER>>8);
     UBRR0L = (uint8_t)(BAUD_PRESCALLER);
@@ -11,7 +10,6 @@ void USART_init(void){
 unsigned char USART_receive(FILE *stream){
     while(!(UCSR0A & (1<<RXC0)));
     return UDR0;
-
 }
 
 void USART_send(const unsigned char data, FILE *stream){

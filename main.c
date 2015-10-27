@@ -12,24 +12,13 @@ FILE uart_input = FDEV_SETUP_STREAM(NULL, USART_receive, _FDEV_SETUP_READ);
 
 void printBackToSerial(const unsigned char matrix[16]){
     for(int i=0; i<16; i++){
-        //if(matrix[i] < 16)
-            //Serial.print("0");
-            //USART_send('0');
-        //USART_send('A');
-        //USART_send('B');
         printf("%02X", matrix[i]);
     }
-    //USART_send('\n');
     printf("\n");
 }
 
-
-void setup() {
-    //Serial.begin(9600);
-}
-
 void loop() {
-    //if(Serial.readBytes(matrix, 16)){
+    while(1){
         transpose(key);
         transpose(plain);
         aes(plain, key);
@@ -41,16 +30,13 @@ void loop() {
         printBackToSerial(plain);
         _delay_ms(10000);
         transpose(plain);
-    //}
-    // put your main code here, to run repeatedly:
+    }
 
 }
-void main(void) {
-    setup();
+int main(void) {
     USART_init();
     stdout = &uart_output;
     stdin  = &uart_input;
-    while(1){
-        loop();
-    }
+    loop();
+    return 1;
 }
