@@ -81,8 +81,12 @@ void nextRound(unsigned char matrix[16], unsigned char roundKey[16], const int r
 }
 
 void aes(unsigned char matrix[16], const unsigned char key[16]){
+    unsigned char roundKey[16];
     int i =0;
     copy(key, roundKey);
+    transpose(roundKey);
+    transpose(matrix);
+
     addRoundKey(matrix, roundKey);
     keyExpansion(roundKey,0);
     for(i=1; i<10; i++)
@@ -90,4 +94,6 @@ void aes(unsigned char matrix[16], const unsigned char key[16]){
     subBytes(matrix);
     shiftRows(matrix);
     addRoundKey(matrix, roundKey);
+
+    transpose(matrix);
 }
