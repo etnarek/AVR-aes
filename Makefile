@@ -57,7 +57,7 @@ all: $(TARGET) $(PROJECT).hex $(PROJECT).eep $(PROJECT).lss size
 
 ##Link
 $(TARGET): $(OBJECTS)
-	 $(CC) $(LDFLAGS) $(OBJECTS) $(LINKONLYOBJECTS) $(LIBDIRS) $(LIBS) -o $(TARGET)
+	$(CC) $(LDFLAGS) $(OBJECTS) $(LINKONLYOBJECTS) $(LIBDIRS) $(LIBS) -o $(TARGET)
 
 %.hex: $(TARGET)
 	avr-objcopy -O ihex $(HEX_FLASH_FLAGS)  $< $@
@@ -75,6 +75,10 @@ size: ${TARGET}
 ## Push to arduino
 push:all
 	$(PUSH) $(PUSHFLAGS) -U flash:w:$(PROJECT).hex
+
+test:push
+	@sleep 10
+	python test/test.py
 
 ## Clean target
 .PHONY: clean

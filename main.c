@@ -17,22 +17,23 @@ void printBackToSerial(const unsigned char matrix[16]){
     printf("\n");
 }
 
+void readPlain(unsigned char plain[16]){
+    for(int i=0; i<16; i++)
+        plain[i] = (unsigned char)USART_receive(stdin);
+}
+
 void loop() {
     while(1){
+        readPlain(plain);
         transpose(key);
         transpose(plain);
         aes(plain, key);
         transpose(plain);
         transpose(key);
         printBackToSerial(plain);
-        _delay_ms(10000);
-
-        printBackToSerial(plain);
-        _delay_ms(10000);
-        transpose(plain);
     }
-
 }
+
 int main(void) {
     USART_init();
     stdout = &uart_output;
