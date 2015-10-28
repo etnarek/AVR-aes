@@ -28,8 +28,7 @@ void shiftRows(unsigned char matrix[16]){
         shiftRow(matrix, i);
 }
 
-void mixColumn(unsigned char matrix[16], const int colomnNumber){
-    //Use lookup table to be sideattack safe?
+void mixColumnCalc(unsigned char matrix[16], const int colomnNumber){
     unsigned char a[4]; // copy of column
     unsigned char b[4]; // each element of a multiplied by 2
     int i =0;
@@ -45,6 +44,18 @@ void mixColumn(unsigned char matrix[16], const int colomnNumber){
     matrix[colomnNumber + 4] = b[1] ^ a[0] ^ a[3] ^ b[2] ^ a[2]; /* 2 * a1 + a0 + a3 + 3 * a2 */
     matrix[colomnNumber + 8] = b[2] ^ a[1] ^ a[0] ^ b[3] ^ a[3]; /* 2 * a2 + a1 + a0 + 3 * a3 */
     matrix[colomnNumber + 12] = b[3] ^ a[2] ^ a[1] ^ b[0] ^ a[0]; /* 2 * a3 + a2 + a1 + 3 * a0 */
+}
+
+void mixColumn(unsigned char matrix[16], const int colomnNumber){
+    int i=0;
+    unsigned char a[4];
+    for(i=0; i<4; i++)
+        a[i] = matrix[i*4 + colomnNumber];
+
+    matrix[colomnNumber] = GALOIS_MUL_2[a[0]] ^ GALOIS_MUL_3[a[1]] ^ a[2] ^ a[3];
+    matrix[colomnNumber + 4] = a[0] ^ GALOIS_MUL_2[a[1]] ^ GALOIS_MUL_3[a[2]] ^ a[3];
+    matrix[colomnNumber + 8] = a[0] ^ a[1] ^ GALOIS_MUL_2[a[2]] ^ GALOIS_MUL_3[a[3]];
+    matrix[colomnNumber + 12] = GALOIS_MUL_3[a[0]] ^ a[1] ^ a[2] ^ GALOIS_MUL_2[a[3]];
 }
 
 void mixColumns(unsigned char matrix[16]){
