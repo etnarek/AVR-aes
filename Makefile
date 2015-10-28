@@ -43,8 +43,9 @@ BAUDRATE=115200
 PUSHFLAGS=-F -V -c arduino -p $(TARGETPUSH) -P $(PORT) -b $(BAUDRATE)
 
 ## Objects that must be built in order to link
-SOURCES=$(wildcard *.c)
-OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
+SOURCES=$(wildcard *.c) 
+ASMSOURCES=$(wildcard *.s)
+OBJECTS=$(patsubst %.c,%.o,$(SOURCES)) $(patsubst %.s,%.o,$(ASMSOURCES))
 
 ## Objects explicitly added by the user
 
@@ -53,6 +54,8 @@ all: $(TARGET) $(PROJECT).hex $(PROJECT).eep $(PROJECT).lss size
 
 ## Compile
 %.o:%.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+%.o:%.s
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link

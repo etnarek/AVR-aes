@@ -57,7 +57,7 @@ static const unsigned char GALOIS_MUL_3[256] = {
     0x0b,0x08,0x0d,0x0e,0x07,0x04,0x01,0x02,0x13,0x10,0x15,0x16,0x1f,0x1c,0x19,0x1a
 };
 
-unsigned char subByte(const unsigned char byte);
+extern unsigned char subByte(const unsigned char byte);
 void subBytes(unsigned char matrix[16]);
 void shiftRow(unsigned char matrix[16], const int rowNumber);
 void mixColumn(unsigned char matrix[16], const int colomnNumber);

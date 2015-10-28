@@ -1,9 +1,9 @@
 #include "aes.h"
 #include "matrix.h"
 
-unsigned char subByte(const unsigned char byte){
-    return SBOX[byte];
-}
+//unsigned char subByte(const unsigned char byte){
+//    return SBOX[byte];
+//}
 
 void subBytes(unsigned char matrix[16]){
     int i =0;
