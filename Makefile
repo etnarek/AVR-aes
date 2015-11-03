@@ -80,7 +80,6 @@ push:all
 	$(PUSH) $(PUSHFLAGS) -U flash:w:$(PROJECT).hex
 
 test:push
-	@sleep 10
 	python test/test.py
 
 ## Clean target

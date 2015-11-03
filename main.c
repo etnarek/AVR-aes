@@ -21,9 +21,7 @@ void readPlain(unsigned char plain[16]){
 
 void loop() {
     while(1){
-        printf("Hello\n");
         readPlain(plain);
-        printf("Got it\n");
         aes(plain, key);
         printBackToSerial(plain);
     }
@@ -34,6 +32,7 @@ int main(void) {
     FILE uart_output = FDEV_SETUP_STREAM(USART_send, NULL, _FDEV_SETUP_WRITE);
     stdout = &uart_output;
 
+    printf("*");
     loop();
     return 1;
 }
