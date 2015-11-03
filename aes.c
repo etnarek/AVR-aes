@@ -52,10 +52,10 @@ void mixColumn(unsigned char matrix[16], const int colomnNumber){
     for(i=0; i<4; i++)
         a[i] = matrix[i*4 + colomnNumber];
 
-    matrix[colomnNumber] = GALOIS_MUL_2[a[0]] ^ GALOIS_MUL_3[a[1]] ^ a[2] ^ a[3];
-    matrix[colomnNumber + 4] = a[0] ^ GALOIS_MUL_2[a[1]] ^ GALOIS_MUL_3[a[2]] ^ a[3];
-    matrix[colomnNumber + 8] = a[0] ^ a[1] ^ GALOIS_MUL_2[a[2]] ^ GALOIS_MUL_3[a[3]];
-    matrix[colomnNumber + 12] = GALOIS_MUL_3[a[0]] ^ a[1] ^ a[2] ^ GALOIS_MUL_2[a[3]];
+    matrix[colomnNumber] = multBy2(a[0]) ^ multBy3(a[1]) ^ a[2] ^ a[3];
+    matrix[colomnNumber + 4] = a[0] ^ multBy2(a[1]) ^ multBy3(a[2]) ^ a[3];
+    matrix[colomnNumber + 8] = a[0] ^ a[1] ^ multBy2(a[2]) ^ multBy3(a[3]);
+    matrix[colomnNumber + 12] = multBy3(a[0]) ^ a[1] ^ a[2] ^ multBy2(a[3]);
 }
 
 void mixColumns(unsigned char matrix[16]){
