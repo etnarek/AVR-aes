@@ -76,7 +76,7 @@ void keyExpansion(unsigned char roundKey[16], const int roundNb){
     for(i=0; i<4; i++){
         roundKey[i*4] ^= subByte(roundKey[((i+1)*4)%16+3]);
     }
-    roundKey[0] ^= RCON[roundNb];
+    roundKey[0] ^= getRCON(roundNb);
     for(i=1; i<4; i++){
         for(j=0; j<4; j++)
             roundKey[j*4+i] ^= roundKey[j*4+i-1];
