@@ -1,5 +1,4 @@
-/*.include "includes/m328Pdef.inc"*/
-
+; Matrix gestion
 
 .section .text
 
@@ -126,7 +125,20 @@ transpose:
         brlt lineLoop
     ret
 
-
+.global copy
+copy:
+    ldi r21, 0
+    mov r30, r24
+    mov r31, r25
+    mov r28, r22
+    mov r29, r23
+    copyLoop:
+        ld r18, Z+
+        st Y+, r18
+        inc r21
+        cpi r21, 16
+        brlt copyLoop
+    ret
 
 .section .data
 .type   SBOX, @object

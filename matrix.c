@@ -14,8 +14,8 @@ void swap(unsigned char *a, unsigned char *b){
     /*}*/
 /*}*/
 
-void copy(const unsigned char source[16], unsigned char dest[16]){
-    int i = 0;
-    for(i=0; i<16; i++)
-        dest[i] = source[i];
-}
+/*void copy(const unsigned char source[16], unsigned char dest[16]){*/
+    /*int i = 0;*/
+    /*for(i=0; i<16; i++)*/
+        /*dest[i] = source[i];*/
+/*}*/
