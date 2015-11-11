@@ -8,7 +8,7 @@
 void subBytes(unsigned char matrix[16]){
     int i =0;
     for(i=0; i<16; i++)
-        matrix[i] = subByte(matrix[i]);
+        setMatrix(i, subByte(getMatrix(i)));
 
 }
 
@@ -91,10 +91,11 @@ void nextRound(unsigned char matrix[16], unsigned char roundKey[16], const int r
     keyExpansion(roundKey, roundNb);
 }
 
-void aes(unsigned char matrix[16], const unsigned char key[16]){
-    unsigned char roundKey[16];
+void aes(unsigned char plain[16], const unsigned char key[16]){
+    //unsigned char roundKey[16];
     int i =0;
     copy(key, roundKey);
+    copy(plain, matrix);
     transpose(roundKey);
     transpose(matrix);
 
@@ -107,4 +108,5 @@ void aes(unsigned char matrix[16], const unsigned char key[16]){
     addRoundKey(matrix, roundKey);
 
     transpose(matrix);
+    copy(matrix, plain);
 }
