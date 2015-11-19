@@ -1,14 +1,14 @@
 #include "aes.h"
 #include "matrix.h"
 
-void subBytes(unsigned char matrix[16]){
+void subBytes(){
     int i =0;
     for(i=0; i<16; i++)
         setMatrix(i, subByte(getMatrix(i)));
 
 }
 
-void shiftRow(unsigned char matrix[16], const int rowNumber){
+void shiftRow(const int rowNumber){
     unsigned char tmpRow[4];
     int i =0;
     for(i=0;i<4;i++)
@@ -18,13 +18,13 @@ void shiftRow(unsigned char matrix[16], const int rowNumber){
         setMatrix(i+4*rowNumber, tmpRow[(i+rowNumber)%4]);
 }
 
-void shiftRows(unsigned char matrix[16]){
+void shiftRows(){
     int i =0;
     for(i=0; i<4; i++)
-        shiftRow(matrix, i);
+        shiftRow(i);
 }
 
-void mixColumn(unsigned char matrix[16], const int colomnNumber){
+void mixColumn(const int colomnNumber){
     int i=0;
     unsigned char a[4];
     for(i=0; i<4; i++)
@@ -36,19 +36,19 @@ void mixColumn(unsigned char matrix[16], const int colomnNumber){
     setMatrix(colomnNumber + 12, multBy3(a[0]) ^ a[1] ^ a[2] ^ multBy2(a[3]));
 }
 
-void mixColumns(unsigned char matrix[16]){
+void mixColumns(){
     int i =0;
     for(i=0; i<4; i++)
-        mixColumn(matrix, i);
+        mixColumn(i);
 }
 
-void addRoundKey(unsigned char matrix[16], const unsigned char roundKey[16]){
+void addRoundKey(){
     int i =0;
     for(i=0; i<16; i++)
         setMatrix(i, getRoundKey(i) ^ getMatrix(i));
 }
 
-void keyExpansion(unsigned char roundKey[16], const int roundNb){
+void keyExpansion(const int roundNb){
     int i,j =0;
     // RotWord + subByte
     for(i=0; i<4; i++){
@@ -61,29 +61,28 @@ void keyExpansion(unsigned char roundKey[16], const int roundNb){
     }
 }
 
-void nextRound(unsigned char matrix[16], unsigned char roundKey[16], const int roundNb){
-    subBytes(matrix);
-    shiftRows(matrix);
-    mixColumns(matrix);
-    addRoundKey(matrix, roundKey);
-    keyExpansion(roundKey, roundNb);
+void nextRound(const int roundNb){
+    subBytes();
+    shiftRows();
+    mixColumns();
+    addRoundKey();
+    keyExpansion(roundNb);
 }
 
 void aes(unsigned char plain[16], const unsigned char key[16]){
-    //unsigned char roundKey[16];
     int i =0;
     copy(key, roundKey);
     copy(plain, matrix);
     transpose(roundKey);
     transpose(matrix);
 
-    addRoundKey(matrix, roundKey);
-    keyExpansion(roundKey,0);
+    addRoundKey();
+    keyExpansion(0);
     for(i=1; i<10; i++)
-        nextRound(matrix, roundKey, i);
-    subBytes(matrix);
-    shiftRows(matrix);
-    addRoundKey(matrix, roundKey);
+        nextRound(i);
+    subBytes();
+    shiftRows();
+    addRoundKey();
 
     transpose(matrix);
     copy(matrix, plain);
