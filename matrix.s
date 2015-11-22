@@ -3,6 +3,9 @@
 .section .text
 
 .global subByte
+; r24: byte to substitue
+; return in r24 the substitued byte
+; change r24, r30, r31
 subByte:
     mov r30, r24                ; load Z = array index
     ldi r31, 0                  ; ...high byte of index is 0
@@ -12,6 +15,9 @@ subByte:
     ret
 
 .global getRCON
+; r24: index for the RCON matrix
+; return in r24 RCON value
+; change r24, r30, r31
 getRCON:
     mov r30, r24
     ldi r31, 0
@@ -21,6 +27,9 @@ getRCON:
     ret
 
 .global getMatrix
+; r24: index for the matrix
+; return in r24 the value
+; change r24, r30, r31
 getMatrix:
     mov r30, r24
     ldi r31, 0
@@ -30,6 +39,8 @@ getMatrix:
     ret
 
 .global setMatrix
+; r24: index for the matrix, r22 value to set
+; change r30, r31
 setMatrix:
     mov r30, r24
     ldi r31, 0
@@ -39,6 +50,9 @@ setMatrix:
     ret
 
 .global getRoundKey
+; r24: index for the roundKey
+; return in r24 the value
+; change r24, r30, r31
 getRoundKey:
     mov r30, r24
     ldi r31, 0
@@ -48,6 +62,8 @@ getRoundKey:
     ret
 
 .global setRoundKey
+; r24: index for the roundKey matrix, r22 value to set
+; change r30, r31
 setRoundKey:
     mov r30, r24
     ldi r31, 0
@@ -57,6 +73,9 @@ setRoundKey:
     ret
 
 .global multBy2
+; r24: the value to multiply
+; return in r24 R24*2
+; change r24, r30, r31
 multBy2:
     mov r30, r24
     ldi r31, 0
@@ -66,6 +85,9 @@ multBy2:
     ret
 
 .global multBy3
+; r24: the value to multiply
+; return in r24 r24*3
+; change r24, r30, r31
 multBy3:
     mov r30, r24
     ldi r31, 0
@@ -75,6 +97,8 @@ multBy3:
     ret
 
 .global transpose
+; (r24,r25): the address of the matrix to transpose
+; change r21, r22, r23, r28, r29, r30, r31
 transpose:
     mov r30, r24
     mov r31, r25
@@ -126,6 +150,9 @@ transpose:
     ret
 
 .global copy
+; (r24,r25): the address of the matrix to copy from
+; (r22,r23): the address of the matrix to copy to
+; change r18, r21, r28, r29, r30, r31
 copy:
     ldi r21, 0
     mov r30, r24
