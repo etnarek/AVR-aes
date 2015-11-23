@@ -2,7 +2,7 @@
 #define AES_H
 
 extern void subBytes();
-void shiftRow(const int rowNumber);
+extern void shiftRow(const int rowNumber);
 void mixColumn(const int colomnNumber);
 void mixColumns();
 void addRoundKey();

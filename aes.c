@@ -8,15 +8,15 @@
 //
 //}
 
-void shiftRow(const int rowNumber){
-    unsigned char tmpRow[4];
-    int i =0;
-    for(i=0;i<4;i++)
-        tmpRow[i] = getMatrix(i+ 4*rowNumber);
-
-    for(i=0;i<4;i++)
-        setMatrix(i+4*rowNumber, tmpRow[(i+rowNumber)%4]);
-}
+//void shiftRow(const char rowNumber){
+//    unsigned char tmpRow[4];
+//    int i =0;
+//    for(i=0;i<4;i++)
+//        tmpRow[i] = getMatrix(i+ 4*rowNumber);
+//
+//    for(i=0;i<4;i++)
+//        setMatrix(i+4*rowNumber, tmpRow[(i+rowNumber)%4]);
+//}
 
 void shiftRows(){
     int i =0;
