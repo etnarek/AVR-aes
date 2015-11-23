@@ -1,12 +1,12 @@
 #include "aes.h"
 #include "matrix.h"
 
-void subBytes(){
-    int i =0;
-    for(i=0; i<16; i++)
-        setMatrix(i, subByte(getMatrix(i)));
-
-}
+//void subBytes(){
+//    int i =0;
+//    for(i=0; i<16; i++)
+//        setMatrix(i, subByte(getMatrix(i)));
+//
+//}
 
 void shiftRow(const int rowNumber){
     unsigned char tmpRow[4];

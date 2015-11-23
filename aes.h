@@ -1,7 +1,7 @@
 #ifndef AES_H
 #define AES_H
 
-void subBytes();
+extern void subBytes();
 void shiftRow(const int rowNumber);
 void mixColumn(const int colomnNumber);
 void mixColumns();
