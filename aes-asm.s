@@ -147,3 +147,20 @@ mixColumns:
         cpi r24, 4
         brlt mixColumnsLoop
     ret
+
+.global addRoundKey
+addRoundKey:
+    ldi r24, 0
+    addRoundKeyLoop:
+        mov r23, r24
+        call getMatrix
+        mov r22, r24
+        mov r24, r23
+        call getRoundKey
+        eor r22, r24
+        mov r24, r23
+        call setMatrix
+        inc r24
+        cpi r24, 16
+        brlt addRoundKeyLoop
+    ret

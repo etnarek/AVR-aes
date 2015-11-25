@@ -42,11 +42,11 @@
 //        mixColumn(i);
 //}
 
-void addRoundKey(){
-    int i =0;
-    for(i=0; i<16; i++)
-        setMatrix(i, getRoundKey(i) ^ getMatrix(i));
-}
+//void addRoundKey(){
+//    int i =0;
+//    for(i=0; i<16; i++)
+//        setMatrix(i, getRoundKey(i) ^ getMatrix(i));
+//}
 
 void keyExpansion(const int roundNb){
     int i,j =0;
