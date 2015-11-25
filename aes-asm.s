@@ -224,3 +224,14 @@ keyExpansion:
         cpi r18, 4
         brlt keyExpansionILoop
     ret
+
+.global nextRound
+nextRound:
+    push r24
+    call subBytes
+    call shiftRows
+    call mixColumns
+    call addRoundKey
+    pop r24
+    call keyExpansion
+    ret

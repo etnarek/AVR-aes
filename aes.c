@@ -61,13 +61,13 @@
 //    }
 //}
 
-void nextRound(const int roundNb){
-    subBytes();
-    shiftRows();
-    mixColumns();
-    addRoundKey();
-    keyExpansion(roundNb);
-}
+//void round(const int roundNb){
+//    subBytes();
+//    shiftRows();
+//    mixColumns();
+//    addRoundKey();
+//    keyExpansion(roundNb);
+//}
 
 void aes(unsigned char plain[16], const unsigned char key[16]){
     int i =0;
