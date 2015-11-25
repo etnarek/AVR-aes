@@ -18,11 +18,11 @@
 //        setMatrix(i+4*rowNumber, tmpRow[(i+rowNumber)%4]);
 //}
 
-void shiftRows(){
-    int i =0;
-    for(i=0; i<4; i++)
-        shiftRow(i);
-}
+//void shiftRows(){
+//    int i =0;
+//    for(i=0; i<4; i++)
+//        shiftRow(i);
+//}
 
 void mixColumn(const int colomnNumber){
     int i=0;

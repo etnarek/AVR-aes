@@ -3,6 +3,7 @@
 
 extern void subBytes();
 extern void shiftRow(const int rowNumber);
+extern void shiftRows();
 void mixColumn(const int colomnNumber);
 void mixColumns();
 void addRoundKey();

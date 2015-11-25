@@ -47,3 +47,14 @@ shiftRow:
         brne shiftRowPopLoop
     ret
 
+.global shiftRows
+shiftRows:
+    ldi r24, 0
+    shiftRowsLoop:
+        push r24
+        call shiftRow
+        pop r24
+        inc r24
+        cpi r24, 4
+        brlt shiftRowsLoop
+    ret
