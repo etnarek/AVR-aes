@@ -9,6 +9,6 @@ extern void mixColumns();
 extern void addRoundKey();
 extern void keyExpansion(const int roundNb);
 extern void nextRound(const int roundNb);
-void aes();
+extern void aes();
 
 #endif /*AES_H*/

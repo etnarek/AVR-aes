@@ -69,13 +69,13 @@
 //    keyExpansion(roundNb);
 //}
 
-void aes(){
-    int i =0;
-    addRoundKey();
-    keyExpansion(0);
-    for(i=1; i<10; i++)
-        nextRound(i);
-    subBytes();
-    shiftRows();
-    addRoundKey();
-}
+//void aes(){
+//    int i =0;
+//    addRoundKey();
+//    keyExpansion(0);
+//    for(i=1; i<10; i++)
+//        nextRound(i);
+//    subBytes();
+//    shiftRows();
+//    addRoundKey();
+//}

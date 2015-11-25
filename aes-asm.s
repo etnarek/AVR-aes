@@ -235,3 +235,21 @@ nextRound:
     pop r24
     call keyExpansion
     ret
+
+.global aes
+aes:
+    call addRoundKey
+    ldi r24, 0
+    call keyExpansion
+    ldi r24, 1
+    aesLoop:
+        push r24
+        call nextRound
+        pop r24
+        inc r24
+        cpi r24, 10
+        brlt aesLoop
+    call subBytes
+    call shiftRows
+    call addRoundKey
+    ret
