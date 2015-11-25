@@ -58,3 +58,81 @@ shiftRows:
         cpi r24, 4
         brlt shiftRowsLoop
     ret
+
+.global mixColumn
+;r24: columnNumber
+mixColumn:
+    mov r23, r24
+    ldi r24, 0
+    add r24, r23
+    call getMatrix
+    mov r18, r24
+
+    ldi r24, 4
+    add r24, r23
+    call getMatrix
+    mov r19, r24
+
+    ldi r24, 8
+    add r24, r23
+    call getMatrix
+    mov r20, r24
+
+    ldi r24, 12
+    add r24, r23
+    call getMatrix
+    mov r21, r24
+
+    ldi r22, 0
+    mov r24, r18
+    call multBy2
+    eor r22, r24
+    mov r24, r19
+    call multBy3
+    eor r22, r24
+    eor r22, r20
+    eor r22, r21
+    ldi r24, 0
+    add r24, r23
+    call setMatrix
+
+    ldi r22, 0
+    mov r24, r19
+    call multBy2
+    eor r22, r24
+    mov r24, r20
+    call multBy3
+    eor r22, r24
+    eor r22, r21
+    eor r22, r18
+    ldi r24, 4
+    add r24, r23
+    call setMatrix
+
+    ldi r22, 0
+    mov r24, r20
+    call multBy2
+    eor r22, r24
+    mov r24, r21
+    call multBy3
+    eor r22, r24
+    eor r22, r18
+    eor r22, r19
+    ldi r24, 8
+    add r24, r23
+    call setMatrix
+
+    ldi r22, 0
+    mov r24, r21
+    call multBy2
+    eor r22, r24
+    mov r24, r18
+    call multBy3
+    eor r22, r24
+    eor r22, r19
+    eor r22, r20
+    ldi r24, 12
+    add r24, r23
+    call setMatrix
+    ret
+

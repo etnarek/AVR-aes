@@ -4,7 +4,7 @@
 extern void subBytes();
 extern void shiftRow(const int rowNumber);
 extern void shiftRows();
-void mixColumn(const int colomnNumber);
+extern void mixColumn(const char colomnNumber);
 void mixColumns();
 void addRoundKey();
 void keyExpansion(const int roundNb);

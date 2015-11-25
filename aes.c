@@ -24,17 +24,17 @@
 //        shiftRow(i);
 //}
 
-void mixColumn(const int colomnNumber){
-    int i=0;
-    unsigned char a[4];
-    for(i=0; i<4; i++)
-        a[i] = getMatrix(i*4 + colomnNumber);
-
-    setMatrix(colomnNumber, multBy2(a[0]) ^ multBy3(a[1]) ^ a[2] ^ a[3]);
-    setMatrix(colomnNumber + 4, a[0] ^ multBy2(a[1]) ^ multBy3(a[2]) ^ a[3]);
-    setMatrix(colomnNumber + 8, a[0] ^ a[1] ^ multBy2(a[2]) ^ multBy3(a[3]));
-    setMatrix(colomnNumber + 12, multBy3(a[0]) ^ a[1] ^ a[2] ^ multBy2(a[3]));
-}
+//void mixColumn(const int colomnNumber){
+//    int i=0;
+//    unsigned char a[4];
+//    for(i=0; i<4; i++)
+//        a[i] = getMatrix(i*4 + colomnNumber);
+//
+//    setMatrix(colomnNumber, multBy2(a[0]) ^ multBy3(a[1]) ^ a[2] ^ a[3]);
+//    setMatrix(colomnNumber + 4, a[0] ^ multBy2(a[1]) ^ multBy3(a[2]) ^ a[3]);
+//    setMatrix(colomnNumber + 8, a[0] ^ a[1] ^ multBy2(a[2]) ^ multBy3(a[3]));
+//    setMatrix(colomnNumber + 12, multBy3(a[0]) ^ a[1] ^ a[2] ^ multBy2(a[3]));
+//}
 
 void mixColumns(){
     int i =0;
