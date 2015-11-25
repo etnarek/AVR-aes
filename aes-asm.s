@@ -164,3 +164,63 @@ addRoundKey:
         cpi r24, 16
         brlt addRoundKeyLoop
     ret
+
+.global keyExpansion
+keyExpansion:
+    mov r20, r24 ; roundNb
+    ldi r19, 0
+    keyExpansionSubByteLoop:
+        mov r24, r19
+        inc r24
+        lsl r24
+        lsl r24
+        andi r24, 15
+        subi r24, 253 ; add 3
+        call getRoundKey
+        call subByte
+        mov r22, r24
+
+        mov r24, r19
+        lsl r24
+        lsl r24
+        push r24
+        call getRoundKey
+        eor r22, r24
+        pop r24
+        call setRoundKey
+        inc r19
+        cpi r19, 4
+        brlt keyExpansionSubByteLoop
+    ldi r24, 0
+    call getRoundKey
+    mov r22, r24
+    mov r24, r20
+    call getRCON
+    eor r22, r24
+    ldi r24, 0
+    call setRoundKey
+    ldi r18, 1
+    keyExpansionILoop:
+        ldi r19, 0
+        keyExpansionJLoop:
+            mov r24, r19
+            lsl r24
+            lsl r24
+            add r24, r18
+            push r24
+            dec r24
+            call getRoundKey
+            mov r22, r24
+            pop r24
+            push r24
+            call getRoundKey
+            eor r22, r24
+            pop r24
+            call setRoundKey
+            inc r19
+            cpi r19, 4
+            brlt keyExpansionJLoop
+        inc r18
+        cpi r18, 4
+        brlt keyExpansionILoop
+    ret

@@ -48,18 +48,18 @@
 //        setMatrix(i, getRoundKey(i) ^ getMatrix(i));
 //}
 
-void keyExpansion(const int roundNb){
-    int i,j =0;
-    // RotWord + subByte
-    for(i=0; i<4; i++){
-        setRoundKey(i*4, subByte(getRoundKey(((i+1)*4)%16+3)) ^ getRoundKey(i*4));
-    }
-    setRoundKey(0, getRCON(roundNb) ^ getRoundKey(0));
-    for(i=1; i<4; i++){
-        for(j=0; j<4; j++)
-            setRoundKey(j*4+i, getRoundKey(j*4+i-1) ^ getRoundKey(j*4+i));
-    }
-}
+//void keyExpansion(const int roundNb){
+//    int i,j =0;
+//    // RotWord + subByte
+//    for(i=0; i<4; i++){
+//        setRoundKey(i*4, subByte(getRoundKey(((i+1)*4)%16+3)) ^ getRoundKey(i*4));
+//    }
+//    setRoundKey(0, getRCON(roundNb) ^ getRoundKey(0));
+//    for(i=1; i<4; i++){
+//        for(j=0; j<4; j++)
+//            setRoundKey(j*4+i, getRoundKey(j*4+i-1) ^ getRoundKey(j*4+i));
+//    }
+//}
 
 void nextRound(const int roundNb){
     subBytes();
