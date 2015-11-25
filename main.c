@@ -22,7 +22,13 @@ void readPlain(unsigned char plain[16]){
 void loop() {
     while(1){
         readPlain(plain);
+        copy(key, roundKey);
+        copy(plain, matrix);
+        transpose(roundKey);
+        transpose(matrix);
         aes(plain, key);
+        transpose(matrix);
+        copy(matrix, plain);
         printBackToSerial(plain);
     }
 }

@@ -71,11 +71,6 @@
 
 void aes(unsigned char plain[16], const unsigned char key[16]){
     int i =0;
-    copy(key, roundKey);
-    copy(plain, matrix);
-    transpose(roundKey);
-    transpose(matrix);
-
     addRoundKey();
     keyExpansion(0);
     for(i=1; i<10; i++)
@@ -83,7 +78,4 @@ void aes(unsigned char plain[16], const unsigned char key[16]){
     subBytes();
     shiftRows();
     addRoundKey();
-
-    transpose(matrix);
-    copy(matrix, plain);
 }
