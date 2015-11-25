@@ -26,7 +26,7 @@ void loop() {
         copy(plain, matrix);
         transpose(roundKey);
         transpose(matrix);
-        aes(plain, key);
+        aes();
         transpose(matrix);
         copy(matrix, plain);
         printBackToSerial(plain);

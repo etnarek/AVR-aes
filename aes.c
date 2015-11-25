@@ -69,7 +69,7 @@
 //    keyExpansion(roundNb);
 //}
 
-void aes(unsigned char plain[16], const unsigned char key[16]){
+void aes(){
     int i =0;
     addRoundKey();
     keyExpansion(0);
