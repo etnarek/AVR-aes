@@ -36,11 +36,11 @@
 //    setMatrix(colomnNumber + 12, multBy3(a[0]) ^ a[1] ^ a[2] ^ multBy2(a[3]));
 //}
 
-void mixColumns(){
-    int i =0;
-    for(i=0; i<4; i++)
-        mixColumn(i);
-}
+//void mixColumns(){
+//    int i =0;
+//    for(i=0; i<4; i++)
+//        mixColumn(i);
+//}
 
 void addRoundKey(){
     int i =0;

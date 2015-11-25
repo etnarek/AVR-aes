@@ -136,3 +136,14 @@ mixColumn:
     call setMatrix
     ret
 
+.global mixColumns
+mixColumns:
+    ldi r24, 0
+    mixColumnsLoop:
+        push r24
+        call mixColumn
+        pop r24
+        inc r24
+        cpi r24, 4
+        brlt mixColumnsLoop
+    ret
