@@ -8,5 +8,5 @@ while 1:
     text = text[:32]
     text_ascii = codecs.decode(text, "hex")
     ser.write(text_ascii)
-    print(ser.readline().strip().decode("utf-8"))
+    print(codecs.encode(ser.readline().strip(), "hex").decode("utf-8").upper())
 

@@ -7,14 +7,14 @@ void USART_init(void){
     UCSR0C = (3<<UCSZ00);
 }
 
-char USART_receive(FILE *stream){
+char USART_receive(){
     while(!(UCSR0A & (1<<RXC0)));
     return UDR0;
 }
 
-int USART_send(const char data, FILE *stream){
+int USART_send(const char data){
     if (data == '\n')
-        USART_send('\r', stream);
+        USART_send('\r');
     while(!(UCSR0A & (1<<UDRE0)));
     UDR0 = data;
     return 0;
