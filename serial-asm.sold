@@ -1,0 +1,47 @@
+
+.section text
+
+.global USART_init
+USART_init:
+; inisialisasi baudrate
+    temp, LOW(BAUD_PRESCALLER)
+    sts UBRR0L, temp
+    ldi temp, HIGH(BAUD_PRESCALLER)
+    sts UBRR0H, temp
+
+; Frame-Format: 8 Bit
+    ldi temp, (3<<UCSZ00)
+    sts UCSR0C, temp
+
+; set interrupt and receive
+    ldi temp, (1<<RXCIE0)|(1<<RXEN0)
+    sts UCSR0B, RXEN0
+
+    sei
+
+.global USART_receive
+USART_receive:
+    receiveWaitLoop:
+        lds r20, UCSR0A
+        sbrs r20, 7
+        rjmp receiveWaitLoop
+    lds r24, UDR0
+    ret
+
+.global USART_send
+USART_send:
+    mov r20, r24
+    cpi r24, 10 ; if == "\n"
+    brne notReturn
+        ldi r24, 13 ; send "\r"
+        call USART_send
+    notReturn:
+    sendWaitLoop:
+        lds r21, UCSR0A
+        sbrs r21, 5
+        rjmp sendWaitLoop
+    sts UDR0, r20
+    ret
+
+
+

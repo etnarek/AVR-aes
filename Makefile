@@ -45,7 +45,8 @@ PUSHFLAGS=-F -V -c arduino -p $(TARGETPUSH) -P $(PORT) -b $(BAUDRATE)
 ## Objects that must be built in order to link
 SOURCES=$(wildcard *.c) 
 ASMSOURCES=$(wildcard *.s)
-OBJECTS=$(patsubst %.c,%.o,$(SOURCES)) $(patsubst %.s,%.o,$(ASMSOURCES))
+AASMSOURCES=$(wildcard *.asm)
+OBJECTS=$(patsubst %.c,%.o,$(SOURCES)) $(patsubst %.s,%.o,$(ASMSOURCES)) $(patsubst %.asm,%.o,$(AASMSOURCES))
 
 ## Objects explicitly added by the user
 
@@ -57,6 +58,9 @@ all: $(TARGET) $(PROJECT).hex $(PROJECT).eep $(PROJECT).lss size
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 %.o:%.s
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+%.o:%.asm
+	avr-as $(INCLUDES) $(COMMON) -c $<
 
 ##Link
 $(TARGET): $(OBJECTS)
