@@ -11,10 +11,7 @@ void printBackToSerial(){
     USART_send('\n');
 }
 
-void readPlain(){
-    for(int i=0; i<16; i++)
-        setMatrix(i,(unsigned char)USART_receive());
-}
+extern void readPlain();
 
 void loop() {
     while(1){
