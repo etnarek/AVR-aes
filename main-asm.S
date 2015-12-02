@@ -29,3 +29,30 @@ print:
     call USART_send
     ret
 
+.global loop
+loop:
+    call readPlain
+
+    ldi r24, lo8(key)
+    ldi r25, hi8(key)
+    ldi r22, lo8(roundKey)
+    ldi r23, hi8(roundKey)
+    call copy
+
+    ldi r24, lo8(roundKey)
+    ldi r25, hi8(roundKey)
+    call transpose
+
+    ldi r24, lo8(matrix)
+    ldi r25, hi8(matrix)
+    call transpose
+
+    call aes
+
+    ldi r24, lo8(matrix)
+    ldi r25, hi8(matrix)
+    call transpose
+
+    call print
+    rjmp loop
+    ret
