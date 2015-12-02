@@ -1,23 +1,30 @@
+.equ F_CPU, 16000000
+
+#include <avr/io.h>
+
+.equ BAUDRATE, 9600
+.equ BAUD_PRESCALLER, (((F_CPU / (BAUDRATE * 16))) - 1)
 
 .section text
 
 .global USART_init
 USART_init:
 ; inisialisasi baudrate
-    temp, LOW(BAUD_PRESCALLER)
-    sts UBRR0L, temp
-    ldi temp, HIGH(BAUD_PRESCALLER)
-    sts UBRR0H, temp
+    ldi r20, 0
+    ldi r16, lo8(BAUD_PRESCALLER)
+    sts UBRR0L, r16
+    ldi r16, hi8(BAUD_PRESCALLER)
+    sts UBRR0H, r16
 
 ; Frame-Format: 8 Bit
-    ldi temp, (3<<UCSZ00)
-    sts UCSR0C, temp
+    ldi r16, (3<<UCSZ00)
+    sts UCSR0C, r16
 
 ; set interrupt and receive
-    ldi temp, (1<<RXCIE0)|(1<<RXEN0)
+    ldi r16, (1<<RXEN0)|(1<<TXEN0)
     sts UCSR0B, RXEN0
 
-    sei
+    ret
 
 .global USART_receive
 USART_receive:

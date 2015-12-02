@@ -8,7 +8,7 @@
 #define BAUD_PRESCALLER (((F_CPU / (BAUDRATE * 16UL))) - 1)
 
 void USART_init(void);
-char USART_receive();
-int USART_send(const char data);
+char USART_receive(void);
+void USART_send(const char data);
 
 #endif /*SERIAL_H*/
