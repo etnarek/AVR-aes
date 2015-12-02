@@ -13,8 +13,6 @@ char USART_receive(void){
 }
 
 void USART_send(const char data){
-    if (data == '\n')
-        USART_send('\r');
     while(!(UCSR0A & (1<<UDRE0)));
     UDR0 = data;
 

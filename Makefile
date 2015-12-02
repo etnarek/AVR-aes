@@ -15,7 +15,7 @@ COMMON = -mmcu=$(MCU)
 
 ## Compile options common for all C compilation units.
 CFLAGS = $(COMMON)
-CFLAGS += -Wall -gdwarf-2 -Os -std=gnu99 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -g
+CFLAGS += -Wall -gdwarf-2 -Os -std=gnu99 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -g -DARDUINO=106 -DF_CPU=16000000L -ffunction-sections -fdata-sections -w -fno-exceptions
 #CFLAGS += -MD -MP -MT $(*F).o -MF dep/$(@F).d 
 
 ## Assembly specific flags
@@ -25,22 +25,22 @@ ASMFLAGS += -x assembler-with-cpp -Wa,-gdwarf2
 
 ## Linker flags
 LDFLAGS = $(COMMON)
-LDFLAGS +=  -Wl,-Map=$(PROJECT).map
+LDFLAGS +=-Wl,-Os -Wl,--gc-sections
 
 
 ## Intel Hex file production flags
-HEX_FLASH_FLAGS = -R .eeprom -R .fuse -R .lock -R .signature
+HEX_FLASH_FLAGS = -R .eeprom
 
 HEX_EEPROM_FLAGS = -j .eeprom
 HEX_EEPROM_FLAGS += --set-section-flags=.eeprom="alloc,load"
 HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 ## Push flags
-PUSH=avrdude
-TARGETPUSH=ATMEGA328P
+PUSH=/usr/share/arduino/hardware/tools/avrdude
 PORT=/dev/ttyACM0
 BAUDRATE=115200
-PUSHFLAGS=-F -V -c arduino -p $(TARGETPUSH) -P $(PORT) -b $(BAUDRATE)
+CONFIGFILE=-C /usr/share/arduino/hardware/tools/avrdude.conf
+PUSHFLAGS=$(CONFIGFILE) -c arduino -p $(MCU) -P $(PORT) -b $(BAUDRATE) -D
 
 ## Objects that must be built in order to link
 SOURCES=$(wildcard *.c) 
@@ -81,7 +81,7 @@ size: ${TARGET}
 
 ## Push to arduino
 push:all
-	$(PUSH) $(PUSHFLAGS) -U flash:w:$(PROJECT).hex
+	$(PUSH) $(PUSHFLAGS) -U flash:w:$(PROJECT).hex:i
 
 test:push
 	python test/test.py

@@ -1,9 +1,13 @@
+.include "matrix.inc"
+.include "aes.inc"
 
-.org 0x00
-    rjmp main
+.section .data
+.type keyyek, @object
+.size keyyek, 16
+;.global key
+keyyek: .byte 0X00, 0X01, 0X02, 0X03, 0X04, 0X05, 0X06, 0X07, 0X08, 0X09, 0X0a, 0X0b, 0X0c, 0X0d, 0X0e, 0X0f
 
 .section .text
-.global readPlain
 readPlain:
     ldi r20, 0
     readPlainLoop:
@@ -16,26 +20,11 @@ readPlain:
         brlt readPlainLoop
     ret
 
-.global print
-print:
-    ldi r20, 0
-    printLoop:
-        mov r24, r20
-        call getMatrix
-        call USART_send
-        inc r20
-        cpi r20, 16
-        brlt printLoop
-    ldi r24, 10
-    call USART_send
-    ret
-
-.global loop
 loop:
     call readPlain
 
-    ldi r24, lo8(key)
-    ldi r25, hi8(key)
+    ldi r24, lo8(keyyek)
+    ldi r25, hi8(keyyek)
     ldi r22, lo8(roundKey)
     ldi r23, hi8(roundKey)
     call copy
@@ -47,13 +36,16 @@ loop:
     ldi r24, lo8(matrix)
     ldi r25, hi8(matrix)
     call transpose
+    DEBUG SBOX
+    DEBUG matrix
+
+    DEBUG roundKey
 
     call aes
 
     ldi r24, lo8(matrix)
     ldi r25, hi8(matrix)
     call transpose
-
     call print
     rjmp loop
     ret
@@ -66,9 +58,4 @@ main:
     call loop
     mov r24, 1
     ret
-
-.section .data
-
-;.global key
-.type key, @object
-key: .byte 0X00, 0X01, 0X02, 0X03, 0X04, 0X05, 0X06, 0X07, 0X08, 0X09, 0X0a, 0X0b, 0X0c, 0X0d, 0X0e, 0X0f
+.end
