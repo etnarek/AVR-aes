@@ -56,3 +56,12 @@ loop:
     call print
     rjmp loop
     ret
+
+.global main
+main:
+    call USART_init
+    ldi r24, 42
+    call USART_send
+    call loop
+    mov r24, 1
+    ret
