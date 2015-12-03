@@ -1,3 +1,5 @@
+.include "m328pdef.inc"
+.include "serial.inc"
 .include "matrix.inc"
 .include "aes.inc"
 
@@ -11,7 +13,9 @@ keyyek: .byte 0X00, 0X01, 0X02, 0X03, 0X04, 0X05, 0X06, 0X07, 0X08, 0X09, 0X0a, 
 readPlain:
     ldi r20, 0
     readPlainLoop:
+        push r20
         call USART_receive
+        pop r20
         mov r22, r24
         mov r24, r20
         call setMatrix
@@ -36,7 +40,6 @@ loop:
     ldi r24, lo8(matrix)
     ldi r25, hi8(matrix)
     call transpose
-    DEBUG SBOX
     DEBUG matrix
 
     DEBUG roundKey
