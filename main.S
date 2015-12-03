@@ -41,9 +41,6 @@ loop:
     ldi r24, lo8(matrix)
     ldi r25, hi8(matrix)
     call transpose
-    DEBUG matrix
-
-    DEBUG roundKey
 
     call aes
 

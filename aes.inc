@@ -227,9 +227,7 @@ keyExpansion:
 .global nextRound
 nextRound:
     push r24
-    DEBUG matrix
     call subBytes
-    DEBUG SBOX
     call shiftRows
     call mixColumns
     call addRoundKey

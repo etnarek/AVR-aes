@@ -28,7 +28,6 @@ USART_receive:
         sbrs r24, RXC0
         rjmp receiveWaitLoop
     lds r24, UDR0
-    call USART_send
     ret
 
 .global USART_send
