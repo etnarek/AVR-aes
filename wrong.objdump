@@ -1,0 +1,541 @@
+
+main.elf:     file format elf32-avr
+
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+	0c 94 34 00 	jmp	0x68	; 0x68 <__ctors_end>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+	0c 94 3e 00 	jmp	0x7c	; 0x7c <__bad_interrupt>
+
+00000068 <__ctors_end>:
+	11 24       	eor	r1, r1
+	1f be       	out	0x3f, r1	; 63
+	cf ef       	ldi	r28, 0xFF	; 255
+	d8 e0       	ldi	r29, 0x08	; 8
+	de bf       	out	0x3e, r29	; 62
+	cd bf       	out	0x3d, r28	; 61
+	0e 94 18 02 	call	0x430	; 0x430 <main>
+	0c 94 21 02 	jmp	0x442	; 0x442 <_exit>
+
+0000007c <__bad_interrupt>:
+	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000080 <USART_init>:
+	87 e6       	ldi	r24, 0x67	; 103
+	80 93 c4 00 	sts	0x00C4, r24
+	80 e0       	ldi	r24, 0x00	; 0
+	80 93 c5 00 	sts	0x00C5, r24
+	88 e1       	ldi	r24, 0x18	; 24
+	80 93 c1 00 	sts	0x00C1, r24
+	86 e0       	ldi	r24, 0x06	; 6
+	80 93 c2 00 	sts	0x00C2, r24
+	08 95       	ret
+
+0000009a <USART_receive>:
+	80 91 c0 00 	lds	r24, 0x00C0
+	87 ff       	sbrs	r24, 7
+	fc cf       	rjmp	.-8      	; 0x9a <USART_receive>
+	80 91 c6 00 	lds	r24, 0x00C6
+	0e 94 56 00 	call	0xac	; 0xac <USART_send>
+	08 95       	ret
+
+000000ac <USART_send>:
+	50 91 c0 00 	lds	r21, 0x00C0
+	55 ff       	sbrs	r21, 5
+	fc cf       	rjmp	.-8      	; 0xac <USART_send>
+	80 93 c6 00 	sts	0x00C6, r24
+	08 95       	ret
+
+000000ba <subByte>:
+	e8 2f       	mov	r30, r24
+	f0 e0       	ldi	r31, 0x00	; 0
+	e0 5d       	subi	r30, 0xD0	; 208
+	fe 4f       	sbci	r31, 0xFE	; 254
+	80 81       	ld	r24, Z
+	08 95       	ret
+
+000000c6 <getRCON>:
+	e8 2f       	mov	r30, r24
+	f0 e0       	ldi	r31, 0x00	; 0
+	e0 5d       	subi	r30, 0xD0	; 208
+	fd 4f       	sbci	r31, 0xFD	; 253
+	80 81       	ld	r24, Z
+	08 95       	ret
+
+000000d2 <getMatrix>:
+	e8 2f       	mov	r30, r24
+	f0 e0       	ldi	r31, 0x00	; 0
+	e0 50       	subi	r30, 0x00	; 0
+	ff 4f       	sbci	r31, 0xFF	; 255
+	80 81       	ld	r24, Z
+	08 95       	ret
+
+000000de <setMatrix>:
+	e8 2f       	mov	r30, r24
+	f0 e0       	ldi	r31, 0x00	; 0
+	e0 50       	subi	r30, 0x00	; 0
+	ff 4f       	sbci	r31, 0xFF	; 255
+	60 83       	st	Z, r22
+	08 95       	ret
+
+000000ea <getRoundKey>:
+	e8 2f       	mov	r30, r24
+	f0 e0       	ldi	r31, 0x00	; 0
+	e0 5f       	subi	r30, 0xF0	; 240
+	fe 4f       	sbci	r31, 0xFE	; 254
+	80 81       	ld	r24, Z
+	08 95       	ret
+
+000000f6 <setRoundKey>:
+	e8 2f       	mov	r30, r24
+	f0 e0       	ldi	r31, 0x00	; 0
+	e0 5f       	subi	r30, 0xF0	; 240
+	fe 4f       	sbci	r31, 0xFE	; 254
+	60 83       	st	Z, r22
+	08 95       	ret
+
+00000102 <multBy2>:
+	e8 2f       	mov	r30, r24
+	f0 e0       	ldi	r31, 0x00	; 0
+	e6 5c       	subi	r30, 0xC6	; 198
+	fd 4f       	sbci	r31, 0xFD	; 253
+	80 81       	ld	r24, Z
+	08 95       	ret
+
+0000010e <multBy3>:
+	e8 2f       	mov	r30, r24
+	f0 e0       	ldi	r31, 0x00	; 0
+	e6 5c       	subi	r30, 0xC6	; 198
+	fc 4f       	sbci	r31, 0xFC	; 252
+	80 81       	ld	r24, Z
+	08 95       	ret
+
+0000011a <transpose>:
+	e8 2f       	mov	r30, r24
+	f9 2f       	mov	r31, r25
+	c8 2f       	mov	r28, r24
+	d9 2f       	mov	r29, r25
+	60 e0       	ldi	r22, 0x00	; 0
+
+00000124 <lineLoop>:
+	70 e0       	ldi	r23, 0x00	; 0
+
+00000126 <columnLoop>:
+	54 e0       	ldi	r21, 0x04	; 4
+	65 9f       	mul	r22, r21
+	50 2d       	mov	r21, r0
+	ef 93       	push	r30
+	ff 93       	push	r31
+	e7 0f       	add	r30, r23
+	f0 1d       	adc	r31, r0
+	e5 0f       	add	r30, r21
+	f0 1d       	adc	r31, r0
+	54 e0       	ldi	r21, 0x04	; 4
+	75 9f       	mul	r23, r21
+	50 2d       	mov	r21, r0
+	cf 93       	push	r28
+	df 93       	push	r29
+	c6 0f       	add	r28, r22
+	d0 1d       	adc	r29, r0
+	c5 0f       	add	r28, r21
+	d0 1d       	adc	r29, r0
+	48 81       	ld	r20, Y
+	30 81       	ld	r19, Z
+	40 83       	st	Z, r20
+	38 83       	st	Y, r19
+	df 91       	pop	r29
+	cf 91       	pop	r28
+	ff 91       	pop	r31
+	ef 91       	pop	r30
+	73 95       	inc	r23
+	76 17       	cp	r23, r22
+	1c f3       	brlt	.-58     	; 0x126 <columnLoop>
+	63 95       	inc	r22
+	64 30       	cpi	r22, 0x04	; 4
+	fc f2       	brlt	.-66     	; 0x124 <lineLoop>
+	08 95       	ret
+
+00000168 <copy>:
+	50 e0       	ldi	r21, 0x00	; 0
+	e8 2f       	mov	r30, r24
+	f9 2f       	mov	r31, r25
+	c6 2f       	mov	r28, r22
+	d7 2f       	mov	r29, r23
+
+00000172 <copyLoop>:
+	21 91       	ld	r18, Z+
+	29 93       	st	Y+, r18
+	53 95       	inc	r21
+	50 31       	cpi	r21, 0x10	; 16
+	dc f3       	brlt	.-10     	; 0x172 <copyLoop>
+	08 95       	ret
+
+0000017e <print>:
+	40 e0       	ldi	r20, 0x00	; 0
+	e8 2f       	mov	r30, r24
+	f9 2f       	mov	r31, r25
+
+00000184 <printLoop>:
+	84 2f       	mov	r24, r20
+	81 91       	ld	r24, Z+
+	0e 94 56 00 	call	0xac	; 0xac <USART_send>
+	43 95       	inc	r20
+	40 31       	cpi	r20, 0x10	; 16
+	cc f3       	brlt	.-14     	; 0x184 <printLoop>
+	08 95       	ret
+
+00000194 <tpt>:
+	8f 93       	push	r24
+	9f 93       	push	r25
+	0e 94 8d 00 	call	0x11a	; 0x11a <transpose>
+	0e 94 bf 00 	call	0x17e	; 0x17e <print>
+	9f 91       	pop	r25
+	8f 91       	pop	r24
+	0e 94 8d 00 	call	0x11a	; 0x11a <transpose>
+	08 95       	ret
+
+000001aa <subBytes>:
+	40 e0       	ldi	r20, 0x00	; 0
+
+000001ac <subBytesLoop>:
+	84 2f       	mov	r24, r20
+	0e 94 69 00 	call	0xd2	; 0xd2 <getMatrix>
+	0e 94 5d 00 	call	0xba	; 0xba <subByte>
+	68 2f       	mov	r22, r24
+	84 2f       	mov	r24, r20
+	0e 94 6f 00 	call	0xde	; 0xde <setMatrix>
+	43 95       	inc	r20
+	40 31       	cpi	r20, 0x10	; 16
+	a4 f3       	brlt	.-24     	; 0x1ac <subBytesLoop>
+	08 95       	ret
+
+000001c6 <shiftRow>:
+	48 2f       	mov	r20, r24
+	50 e0       	ldi	r21, 0x00	; 0
+	38 2f       	mov	r19, r24
+	33 0f       	add	r19, r19
+	33 0f       	add	r19, r19
+
+000001d0 <shiftRowPushLoop>:
+	85 2f       	mov	r24, r21
+	83 0f       	add	r24, r19
+	0e 94 69 00 	call	0xd2	; 0xd2 <getMatrix>
+	8f 93       	push	r24
+	53 95       	inc	r21
+	54 30       	cpi	r21, 0x04	; 4
+	c4 f3       	brlt	.-16     	; 0x1d0 <shiftRowPushLoop>
+	54 e0       	ldi	r21, 0x04	; 4
+
+000001e2 <shiftRowPopLoop>:
+	5a 95       	dec	r21
+	6f 91       	pop	r22
+	83 2f       	mov	r24, r19
+	25 2f       	mov	r18, r21
+	24 1b       	sub	r18, r20
+	23 70       	andi	r18, 0x03	; 3
+	82 0f       	add	r24, r18
+	0e 94 6f 00 	call	0xde	; 0xde <setMatrix>
+	50 30       	cpi	r21, 0x00	; 0
+	a9 f7       	brne	.-22     	; 0x1e2 <shiftRowPopLoop>
+	08 95       	ret
+
+000001fa <shiftRows>:
+	80 e0       	ldi	r24, 0x00	; 0
+
+000001fc <shiftRowsLoop>:
+	8f 93       	push	r24
+	0e 94 e3 00 	call	0x1c6	; 0x1c6 <shiftRow>
+	8f 91       	pop	r24
+	83 95       	inc	r24
+	84 30       	cpi	r24, 0x04	; 4
+	cc f3       	brlt	.-14     	; 0x1fc <shiftRowsLoop>
+	08 95       	ret
+
+0000020c <mixColumn>:
+	78 2f       	mov	r23, r24
+	80 e0       	ldi	r24, 0x00	; 0
+	87 0f       	add	r24, r23
+	0e 94 69 00 	call	0xd2	; 0xd2 <getMatrix>
+	28 2f       	mov	r18, r24
+	84 e0       	ldi	r24, 0x04	; 4
+	87 0f       	add	r24, r23
+	0e 94 69 00 	call	0xd2	; 0xd2 <getMatrix>
+	38 2f       	mov	r19, r24
+	88 e0       	ldi	r24, 0x08	; 8
+	87 0f       	add	r24, r23
+	0e 94 69 00 	call	0xd2	; 0xd2 <getMatrix>
+	48 2f       	mov	r20, r24
+	8c e0       	ldi	r24, 0x0C	; 12
+	87 0f       	add	r24, r23
+	0e 94 69 00 	call	0xd2	; 0xd2 <getMatrix>
+	58 2f       	mov	r21, r24
+	60 e0       	ldi	r22, 0x00	; 0
+	82 2f       	mov	r24, r18
+	0e 94 81 00 	call	0x102	; 0x102 <multBy2>
+	68 27       	eor	r22, r24
+	83 2f       	mov	r24, r19
+	0e 94 87 00 	call	0x10e	; 0x10e <multBy3>
+	68 27       	eor	r22, r24
+	64 27       	eor	r22, r20
+	65 27       	eor	r22, r21
+	80 e0       	ldi	r24, 0x00	; 0
+	87 0f       	add	r24, r23
+	0e 94 6f 00 	call	0xde	; 0xde <setMatrix>
+	60 e0       	ldi	r22, 0x00	; 0
+	83 2f       	mov	r24, r19
+	0e 94 81 00 	call	0x102	; 0x102 <multBy2>
+	68 27       	eor	r22, r24
+	84 2f       	mov	r24, r20
+	0e 94 87 00 	call	0x10e	; 0x10e <multBy3>
+	68 27       	eor	r22, r24
+	65 27       	eor	r22, r21
+	62 27       	eor	r22, r18
+	84 e0       	ldi	r24, 0x04	; 4
+	87 0f       	add	r24, r23
+	0e 94 6f 00 	call	0xde	; 0xde <setMatrix>
+	60 e0       	ldi	r22, 0x00	; 0
+	84 2f       	mov	r24, r20
+	0e 94 81 00 	call	0x102	; 0x102 <multBy2>
+	68 27       	eor	r22, r24
+	85 2f       	mov	r24, r21
+	0e 94 87 00 	call	0x10e	; 0x10e <multBy3>
+	68 27       	eor	r22, r24
+	62 27       	eor	r22, r18
+	63 27       	eor	r22, r19
+	88 e0       	ldi	r24, 0x08	; 8
+	87 0f       	add	r24, r23
+	0e 94 6f 00 	call	0xde	; 0xde <setMatrix>
+	60 e0       	ldi	r22, 0x00	; 0
+	85 2f       	mov	r24, r21
+	0e 94 81 00 	call	0x102	; 0x102 <multBy2>
+	68 27       	eor	r22, r24
+	82 2f       	mov	r24, r18
+	0e 94 87 00 	call	0x10e	; 0x10e <multBy3>
+	68 27       	eor	r22, r24
+	63 27       	eor	r22, r19
+	64 27       	eor	r22, r20
+	8c e0       	ldi	r24, 0x0C	; 12
+	87 0f       	add	r24, r23
+	0e 94 6f 00 	call	0xde	; 0xde <setMatrix>
+	08 95       	ret
+
+000002b0 <mixColumns>:
+	80 e0       	ldi	r24, 0x00	; 0
+
+000002b2 <mixColumnsLoop>:
+	8f 93       	push	r24
+	0e 94 06 01 	call	0x20c	; 0x20c <mixColumn>
+	8f 91       	pop	r24
+	83 95       	inc	r24
+	84 30       	cpi	r24, 0x04	; 4
+	cc f3       	brlt	.-14     	; 0x2b2 <mixColumnsLoop>
+	08 95       	ret
+
+000002c2 <addRoundKey>:
+	80 e0       	ldi	r24, 0x00	; 0
+
+000002c4 <addRoundKeyLoop>:
+	78 2f       	mov	r23, r24
+	0e 94 69 00 	call	0xd2	; 0xd2 <getMatrix>
+	68 2f       	mov	r22, r24
+	87 2f       	mov	r24, r23
+	0e 94 75 00 	call	0xea	; 0xea <getRoundKey>
+	68 27       	eor	r22, r24
+	87 2f       	mov	r24, r23
+	0e 94 6f 00 	call	0xde	; 0xde <setMatrix>
+	83 95       	inc	r24
+	80 31       	cpi	r24, 0x10	; 16
+	94 f3       	brlt	.-28     	; 0x2c4 <addRoundKeyLoop>
+	08 95       	ret
+
+000002e2 <keyExpansion>:
+	48 2f       	mov	r20, r24
+	30 e0       	ldi	r19, 0x00	; 0
+
+000002e6 <keyExpansionSubByteLoop>:
+	83 2f       	mov	r24, r19
+	83 95       	inc	r24
+	88 0f       	add	r24, r24
+	88 0f       	add	r24, r24
+	8f 70       	andi	r24, 0x0F	; 15
+	8d 5f       	subi	r24, 0xFD	; 253
+	0e 94 75 00 	call	0xea	; 0xea <getRoundKey>
+	0e 94 5d 00 	call	0xba	; 0xba <subByte>
+	68 2f       	mov	r22, r24
+	83 2f       	mov	r24, r19
+	88 0f       	add	r24, r24
+	88 0f       	add	r24, r24
+	8f 93       	push	r24
+	0e 94 75 00 	call	0xea	; 0xea <getRoundKey>
+	68 27       	eor	r22, r24
+	8f 91       	pop	r24
+	0e 94 7b 00 	call	0xf6	; 0xf6 <setRoundKey>
+	33 95       	inc	r19
+	34 30       	cpi	r19, 0x04	; 4
+	44 f3       	brlt	.-48     	; 0x2e6 <keyExpansionSubByteLoop>
+	80 e0       	ldi	r24, 0x00	; 0
+	0e 94 75 00 	call	0xea	; 0xea <getRoundKey>
+	68 2f       	mov	r22, r24
+	84 2f       	mov	r24, r20
+	0e 94 63 00 	call	0xc6	; 0xc6 <getRCON>
+	68 27       	eor	r22, r24
+	80 e0       	ldi	r24, 0x00	; 0
+	0e 94 7b 00 	call	0xf6	; 0xf6 <setRoundKey>
+	21 e0       	ldi	r18, 0x01	; 1
+
+0000032e <keyExpansionILoop>:
+	30 e0       	ldi	r19, 0x00	; 0
+
+00000330 <keyExpansionJLoop>:
+	83 2f       	mov	r24, r19
+	88 0f       	add	r24, r24
+	88 0f       	add	r24, r24
+	82 0f       	add	r24, r18
+	8f 93       	push	r24
+	8a 95       	dec	r24
+	0e 94 75 00 	call	0xea	; 0xea <getRoundKey>
+	68 2f       	mov	r22, r24
+	8f 91       	pop	r24
+	8f 93       	push	r24
+	0e 94 75 00 	call	0xea	; 0xea <getRoundKey>
+	68 27       	eor	r22, r24
+	8f 91       	pop	r24
+	0e 94 7b 00 	call	0xf6	; 0xf6 <setRoundKey>
+	33 95       	inc	r19
+	34 30       	cpi	r19, 0x04	; 4
+	64 f3       	brlt	.-40     	; 0x330 <keyExpansionJLoop>
+	23 95       	inc	r18
+	24 30       	cpi	r18, 0x04	; 4
+	44 f3       	brlt	.-48     	; 0x32e <keyExpansionILoop>
+	08 95       	ret
+
+00000360 <nextRound>:
+	8f 93       	push	r24
+	8f 93       	push	r24
+	9f 93       	push	r25
+	80 e0       	ldi	r24, 0x00	; 0
+	91 e0       	ldi	r25, 0x01	; 1
+	0e 94 ca 00 	call	0x194	; 0x194 <tpt>
+	8f 91       	pop	r24
+	9f 91       	pop	r25
+	0e 94 d5 00 	call	0x1aa	; 0x1aa <subBytes>
+	8f 93       	push	r24
+	9f 93       	push	r25
+	80 e3       	ldi	r24, 0x30	; 48
+	91 e0       	ldi	r25, 0x01	; 1
+	0e 94 ca 00 	call	0x194	; 0x194 <tpt>
+	8f 91       	pop	r24
+	9f 91       	pop	r25
+	0e 94 fd 00 	call	0x1fa	; 0x1fa <shiftRows>
+	0e 94 58 01 	call	0x2b0	; 0x2b0 <mixColumns>
+	0e 94 61 01 	call	0x2c2	; 0x2c2 <addRoundKey>
+	8f 91       	pop	r24
+	0e 94 71 01 	call	0x2e2	; 0x2e2 <keyExpansion>
+	08 95       	ret
+
+0000039a <aes>:
+	0e 94 61 01 	call	0x2c2	; 0x2c2 <addRoundKey>
+	80 e0       	ldi	r24, 0x00	; 0
+	0e 94 71 01 	call	0x2e2	; 0x2e2 <keyExpansion>
+	81 e0       	ldi	r24, 0x01	; 1
+
+000003a6 <aesLoop>:
+	8f 93       	push	r24
+	0e 94 b0 01 	call	0x360	; 0x360 <nextRound>
+	8f 91       	pop	r24
+	83 95       	inc	r24
+	8a 30       	cpi	r24, 0x0A	; 10
+	cc f3       	brlt	.-14     	; 0x3a6 <aesLoop>
+	0e 94 d5 00 	call	0x1aa	; 0x1aa <subBytes>
+	0e 94 fd 00 	call	0x1fa	; 0x1fa <shiftRows>
+	0e 94 61 01 	call	0x2c2	; 0x2c2 <addRoundKey>
+	08 95       	ret
+
+000003c2 <readPlain>:
+	40 e0       	ldi	r20, 0x00	; 0
+
+000003c4 <readPlainLoop>:
+	4f 93       	push	r20
+	0e 94 4d 00 	call	0x9a	; 0x9a <USART_receive>
+	4f 91       	pop	r20
+	68 2f       	mov	r22, r24
+	84 2f       	mov	r24, r20
+	0e 94 6f 00 	call	0xde	; 0xde <setMatrix>
+	43 95       	inc	r20
+	40 31       	cpi	r20, 0x10	; 16
+	ac f3       	brlt	.-22     	; 0x3c4 <readPlainLoop>
+	08 95       	ret
+
+000003dc <loop>:
+	0e 94 e1 01 	call	0x3c2	; 0x3c2 <readPlain>
+	80 e2       	ldi	r24, 0x20	; 32
+	91 e0       	ldi	r25, 0x01	; 1
+	60 e1       	ldi	r22, 0x10	; 16
+	71 e0       	ldi	r23, 0x01	; 1
+	0e 94 b4 00 	call	0x168	; 0x168 <copy>
+	80 e1       	ldi	r24, 0x10	; 16
+	91 e0       	ldi	r25, 0x01	; 1
+	0e 94 8d 00 	call	0x11a	; 0x11a <transpose>
+	80 e0       	ldi	r24, 0x00	; 0
+	91 e0       	ldi	r25, 0x01	; 1
+	0e 94 8d 00 	call	0x11a	; 0x11a <transpose>
+	8f 93       	push	r24
+	9f 93       	push	r25
+	80 e0       	ldi	r24, 0x00	; 0
+	91 e0       	ldi	r25, 0x01	; 1
+	0e 94 ca 00 	call	0x194	; 0x194 <tpt>
+	8f 91       	pop	r24
+	9f 91       	pop	r25
+	8f 93       	push	r24
+	9f 93       	push	r25
+	80 e1       	ldi	r24, 0x10	; 16
+	91 e0       	ldi	r25, 0x01	; 1
+	0e 94 ca 00 	call	0x194	; 0x194 <tpt>
+	8f 91       	pop	r24
+	9f 91       	pop	r25
+	0e 94 cd 01 	call	0x39a	; 0x39a <aes>
+	80 e0       	ldi	r24, 0x00	; 0
+	91 e0       	ldi	r25, 0x01	; 1
+	0e 94 8d 00 	call	0x11a	; 0x11a <transpose>
+	0e 94 bf 00 	call	0x17e	; 0x17e <print>
+	d7 cf       	rjmp	.-82     	; 0x3dc <loop>
+	08 95       	ret
+
+00000430 <main>:
+	0e 94 40 00 	call	0x80	; 0x80 <USART_init>
+	8a e2       	ldi	r24, 0x2A	; 42
+	0e 94 56 00 	call	0xac	; 0xac <USART_send>
+	0e 94 ee 01 	call	0x3dc	; 0x3dc <loop>
+	81 2d       	mov	r24, r1
+	08 95       	ret
+
+00000442 <_exit>:
+	f8 94       	cli
+
+00000444 <__stop_program>:
+	ff cf       	rjmp	.-2      	; 0x444 <__stop_program>
