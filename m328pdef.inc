@@ -1,3 +1,6 @@
+.equ F_CPU, 16000000
+.equ BAUDRATE, 9600
+.equ BAUD_PRESCALLER, (((F_CPU / (BAUDRATE * 16))) - 1)
 ;*************************************************************************
 ;* A P P L I C A T I O N   N O T E   F O R   T H E   A V R   F A M I L Y
 ;* 

@@ -1,8 +1,3 @@
-.include "m328pdef.inc"
-.include "serial.inc"
-.include "matrix.inc"
-.include "aes.inc"
-
 .section .data
 .type keyyek, @object
 .size keyyek, 16

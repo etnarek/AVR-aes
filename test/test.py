@@ -2,7 +2,7 @@ import serial
 import codecs
 from time import sleep
 
-ser = serial.Serial("/dev/ttyACM1", 9600)
+ser = serial.Serial("/dev/ttyACM0", 9600)
 print(ser.read().decode("utf-8"))
 
 text = "00112233445566778899AABBCCDDEEFF\n"

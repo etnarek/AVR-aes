@@ -37,7 +37,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 ## Push flags
 PUSH=/usr/share/arduino/hardware/tools/avrdude
-PORT=/dev/ttyACM1
+PORT=/dev/ttyACM0
 BAUDRATE=115200
 CONFIGFILE=-C /usr/share/arduino/hardware/tools/avrdude.conf
 PUSHFLAGS=$(CONFIGFILE) -c arduino -p $(MCU) -P $(PORT) -b $(BAUDRATE) -D

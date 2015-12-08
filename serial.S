@@ -1,8 +1,5 @@
+.include "m328pdef.inc"
 .section .text
-
-.equ F_CPU, 16000000
-.equ BAUDRATE, 9600
-.equ BAUD_PRESCALLER, (((F_CPU / (BAUDRATE * 16))) - 1)
 
 .global USART_init
 USART_init:
