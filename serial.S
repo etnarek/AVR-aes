@@ -35,6 +35,3 @@ USART_send:
         rjmp sendWaitLoop
     sts UDR0, r24
     ret
-
-
-

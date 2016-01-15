@@ -8,8 +8,6 @@ MCU = atmega328p
 TARGET = $(PROJECT).elf
 CC = avr-gcc
 
-CPP = avr-g++
-
 ## Options common to compile, link and assembly rules
 COMMON = -mmcu=$(MCU)
 
