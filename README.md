@@ -9,7 +9,7 @@ Pour uplauder le projet sur l'arduino:
 
 et pour le tester:
 
-    meke test
+    make test
 
 (a condition d'avoir installer pyserial)
 
