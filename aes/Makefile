@@ -34,10 +34,11 @@ HEX_EEPROM_FLAGS += --set-section-flags=.eeprom="alloc,load"
 HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 ## Push flags
-PUSH=/usr/share/arduino/hardware/tools/avrdude
+APATH=/usr/share/arduino10/hardware/tools/
+PUSH=${APATH}avrdude
 PORT=/dev/ttyACM0
 BAUDRATE=115200
-CONFIGFILE=-C /usr/share/arduino/hardware/tools/avrdude.conf
+CONFIGFILE=-C ${APATH}avrdude.conf
 PUSHFLAGS=$(CONFIGFILE) -c arduino -p $(MCU) -P $(PORT) -b $(BAUDRATE) -D
 
 ## Objects that must be built in order to link
