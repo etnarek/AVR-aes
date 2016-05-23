@@ -10,6 +10,7 @@
 \usepackage{csquotes}
 \usepackage[]{algorithmic}
 \usepackage[]{algorithm}
+\usepackage{hyperref}
 
 \author{Romain \textsc{Fontaine}$^{1}$\\
     Superviseurs : Olivier \textsc{Markowitch}, Stephane Fernandes \textsc{Medeiros}\\
@@ -17,7 +18,7 @@
     $^1$Université Libre de Bruxelles, Département d’Informatique \\
     rfontain@ulb.ac.be
 }
-\title{Implémentation en \texttt{AVR} d'un algorithme de chiffrement :\\ \textsc{Schedaes}}
+\title{Implémentation en assembleur d'un algorithme de chiffrement :\\ SchedAES}
 \date{}
 
 \floatname{algorithm}{Algorithme}
@@ -26,11 +27,33 @@
 \maketitle
 
 \section{Introduction:}
-\subsection{AES (ADVANCED ENCRYPTION STANDARD)}
+%c'est quoi aes, scedaes
+%c'est quoi le side-channel, pourquoi c'est important
 AES est un système de chiffrement symétrique grandement utilisé en informatique.
 Un algorithme de chiffrement symétrique est un algorithme qui transforme un message lisible en un chiffré de sorte qu'il ne soit pas lisible par toute personne n'ayant pas la clé de déchiffrement.
 On dit d'un tel algorithme qu'il est symétrique lorsque la même clé est utilisée lors du chiffrement et du déchiffrement. Un des avantage de AES est le fait que même avec un chiffré et son clair correspondant, il faut énormément de ressource pour récupérer la clé utilisée.\\
 
+
+
+
+SchedAES est une amélioration de AES ayant pour but de le rendre plus résistant aux attaques par canaux auxiliaires.\\
+
+Malgré la robustesse de AES, celui-ci est vulnérable aux attaques par canaux auxiliaires.\\
+
+Les attaques par canaux auxiliaires sont des attaques ou la personne essayant de récupérer la clé de chiffrement regarde la consommation électrique, la température et le temps d'exécution de l'algorithme.
+Cela lui permet d'essayer de savoir quelle opération est en cours et peut lui révéler la partie de la clé en cours d'utilisation.\\
+
+Il existe plusieurs manières de protéger un algorithme face à ces attaques:
+\begin{itemize}
+    \item[Ajouter du bruit :] faire des opération en parallèle de sorte à modifier la consommation par exemple.
+    \item[Masquer :] Ajouter un masque à la clé et au texte à chiffrer afin de rendre plus difficile la récupération de la clé originelle.
+    \item[Controler le temps d'exécution des opérations :] Changer la fréquence du processeur en cours d'exécution, sauter quelque cycle entre deux instructions ou changer l'ordre des instructions.\\
+\end{itemize}
+
+SchedAES utilise la dernière technique. Plus particulièrement, il change l'ordre des opération aléatoirement.\\
+
+\section{Description des algorithmes:}
+\subsection{AES (ADVANCED ENCRYPTION STANDARD)}
 Considérons le texte à chiffrer comme une matrice de 16 octets (4 lignes et 4 colonne).
 AES se compose de quatre opération importante:\\
 \begin{itemize}
@@ -65,25 +88,12 @@ GenerateNextRoundKey étant le calcul de la clé pour le prochain AddRoundKey en
 Cette opération peut être faite qu'une seule fois au début en mettant les clé de tous les prochains tour en mémoire ou être fait à chaque tour de boucle.
 
 \subsection{SchedAES}
-SchedAES est une amélioration de AES ayant pour but de le rendre plus résistant aux attaques par canaux auxiliaires.\\
+SchedAES utilise les même opérations que AES. Cepandnt, comme l'order des opérations est aléatoire, il garde en mémoire un set $\Theta$ des prochaines opérations qu'il peut exécuter.\\
 
-Malgré la robustesse de AES, celui-ci est vulnérable aux attaques par canaux auxiliaires.\\
-
-Les attaques par canaux auxiliaires sont des attaques ou la personne essayant de récupérer la clé de chiffrement regarde la consommation électrique, la température et le temps d'exécution de l'algorithme.
-Cela lui permet d'essayer de savoir quelle opération est en cours et peut lui révéler la partie de la clé en cours d'utilisation.\\
-
-Il existe plusieurs manières de protéger un algorithme face à ces attaques:
-\begin{itemize}
-    \item[Ajouter du bruit :] faire des opération en parallèle de sorte à modifier la consommation par exemple.
-    \item[Masquer :] Ajouter un masque à la clé et au texte à chiffrer afin de rendre plus difficile la récupération de la clé originelle.
-    \item[Controler le temps d'execussion des opérations :] Changer la fréquence du processeur en cours d'exécution, sauter quelque cycle entre deux instructions ou changer l'ordre des instructions.\\
-\end{itemize}
-
-SchedAES utilise la dernière technique. Plus particulièrement, il change l'ordre des opération aléatoirement.\\
-
-Pour ce faire, il a en mémoire un set $\Theta$ des prochaines opérations qu'il peut exécuter.
-On prend ensuite une des prochaines opération aléatoirement, on l'exécute et on met $\Theta$ à jour en fonction de cette opération.
-Ceci est fait tant que $\Theta$ n'est pas vide, auquel cas, on a terminé.\\
+Lors de l'exécution de SchedAES, la prochaine opération à être appliquée à la matrice à chiffrer sera récupéré aléatoirement depuis ce set.
+Une fois l'opération terminée, $\Theta$ sera mis à jour en fonction de ce qui a déjà été réalisé.
+Ceci est fait tant que $\Theta$ n'est pas vide.
+Il sera vide une fois que toute les opérations nécessaires pour chiffrer le message seront finies.\\
 
 Les opérations ici ne seront plus considérés sur la matrice entière mais sur chaque case, ligne ou colonne séparément en fonction de l'opération.
 
@@ -99,8 +109,8 @@ Les pré conditions sont les suivantes:
 \end{itemize}
 
 Pour savoir l'état d'avancement, il faudra conserver en mémoire une matrice d'état pour chacune de ces opérations pour savoir si elles ont été exécutées.
-%c'est quoi aes, scedaes
-%c'est quoi le side-channel, pourquoi c'est important
+
+L'algorithme est expliqué plus en détail dans \cite{FernandesMedeiros2012}.
 
 \section{Présentation de la solution}
 comment t'as bossé (c -> asm, tests en pytons, bla blabla)
@@ -109,6 +119,7 @@ tu parles de ton random et du seed (qui est non sécure)
 \section{conclusion}
 ce que ça a donné, ce que tu ferais si tu avais plus de temps
 ça pourrait être pas mal d'implémenter le random comme ça
+
 
 \footnotesize
 \bibliographystyle{apalike}
