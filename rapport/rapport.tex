@@ -30,7 +30,7 @@
 \section{Introduction:}
 La sécurité est une section importante de la Science informatique. De nombreux systèmes se font compromettre alors qu'ils contiennent souvent des informations sensibles. Pour éviter de voir ces secrets divulgués publiquement, il faut faire en sorte que des attaquants ne puissent accéder à ces informations.
 
-Ce papier parlera de l'implémentation d'AES et de SchedAES pour un système embarqué (atmega32p ou arduino). L'implémentation finale se fera en assembleur pour micro contrôler AVR.
+Ce papier parlera de l'implémentation d'AES et de SchedAES pour un système embarqué (atmega328p ou arduino). L'implémentation finale se fera en assembleur pour micro contrôler AVR.
 
 AES est un ``block-cipher'' ayant, dans notre cas, une clé et un bloc de 128 bits.
 La CNSS (Committee on National Security Systems) le considère comme suffisamment sécurisé pour chiffrer des information classifiée ``secret'' dans sa version 128 bits (\cite{policy2003no}).
@@ -93,7 +93,7 @@ Cette opération peut être faite qu'une seule fois au début en mettant les cl�
 AES est définis dans\cite{fips197}
 
 \subsection{SchedAES}
-SchedAES utilise les même opérations que AES. Cepandnt, comme l'order des opérations est aléatoire, il garde en mémoire un set $\Theta$ des prochaines opérations qu'il peut exécuter.
+SchedAES utilise les même opérations que AES. Cependant, comme l'ordre des opérations est aléatoire, il garde en mémoire un set $\Theta$ des prochaines opérations qu'il peut exécuter.
 
 Lors de l'exécution de SchedAES, la prochaine opération à être appliquée à la matrice à chiffrer sera récupéré aléatoirement depuis ce set.
 Une fois l'opération terminée, $\Theta$ sera mis à jour en fonction de ce qui a déjà été réalisé.
@@ -109,8 +109,8 @@ Les pré conditions sont les suivantes:
 \begin{itemize}
     \item[SubByte :] il est ajouté lorsque le AddRoundKey précédent sur la même case a été exécuté.
     \item[ShiftRow :] il n'est techniquement pas nécessaire de réellement exécuter cette opération. Ici, ShiftRow est ajouté à $\Theta$ lorsque touts les AddRoundKey sur la ligne correspondante ont été exécuté et que le ShiftRow précédent sur cette même ligne a aussi été exécuté.
-    \item[MixColumn :] il est ajouté lorsque tous les SubByte appartenant à la colonne colonne impliquée ont été exécuté. Comme il se peut que tout les ShiftRows n'ont pas été exécutés, la colonne ou il faut vérifier le subByte n'est pas toujours celle sur laquelle le MixColumn va s'appliquer. Il faut calculer le décalage.
-    \item[AddRoundKey :] ils sont ajoutés par 4 pou une colonne lorsque qu'un MixColumn a été exécuté.Il est aussi ajouté après un subByte lorsque qu'on est au 10\up{ème} tour pour celui-ci.
+    \item[MixColumn :] il est ajouté lorsque tous les SubByte appartenant à la colonne colonne impliquée ont été exécuté. Comme il se peut que tout les ShiftRows n'ont pas été exécutés, la colonne ou il faut vérifier le SubByte n'est pas toujours celle sur laquelle le MixColumn va s'appliquer. Il faut calculer le décalage.
+    \item[AddRoundKey :] ils sont ajoutés par 4 pou une colonne lorsque qu'un MixColumn a été exécuté.Il est aussi ajouté après un SubByte lorsque qu'on est au 10\up{ème} tour pour celui-ci.
 \end{itemize}
 
 Pour savoir l'état d'avancement, il faudra conserver en mémoire une matrice d'état pour chacune de ces opérations pour savoir si elles ont été exécutées.
@@ -118,10 +118,46 @@ Pour savoir l'état d'avancement, il faudra conserver en mémoire une matrice d'
 L'algorithme est expliqué plus en détail dans \cite{FernandesMedeiros2012}.
 
 \section{Présentation de la solution}
-comment t'as bossé (c -> asm, tests en pytons, bla blabla)
-tu parles de ton random et du seed (qui est non sécure)
+Le développement pour système embarqué n'est pas toujours évident car il n'est pas toujours possible de déboguer lorsque qu'une erreur se produit.
+C'est pourquoi nous avons décidés de travailler de la manière suivante.
 
-\section{conclusion}
+Pour commencer, l'implémentation de AES en C compilé et exécuté sur ordinateur.
+Lors de cette étape, AES fut découpé en petite composante facilement implémentable.
+Du test unitaire fut appliqué sur chacune de ces fonction pour être certain qu'elles renvoyaient bien le bon résultat.
+Une fois l'implémentation de l'algorithme terminé, il fut aisé de voir si tout fonctionnait bien grâce à ces test unitaires et si le résultat final pour un clair et une clé donné était correct.
+Cette implémentation a été faite en C pour être le plus proche possible de l'assembleur.
+Dans cette optique d'être le plus proche de l'assembleur, un effort a été fait pour avoir des structures de données les plus simples possible et d'avoir des instructions facilement transformable en assembleur plutôt que des instructions complexes non traduisibles.
+
+Une fois ceci fait, le code a été modifié pour être utilisable sur arduino.
+Pour ce faire, il a fallut remplacer tout les \texttt{printf} par des messages sur le port série.
+C'est ainsi que les fonctions \texttt{USART\_send} et \texttt{USART\_receive} ont été implémentées du coté arduino pour faciliter l'utilisation de USART (Universal Synchronous Asynchronous Receiver Transmitter).
+La librairie \texttt{Serial} n'étant pas accessible en assembleur.
+
+Maintenant que l'arduino est capable de lire et d'écrire sur le port série, il a fallut faire en sorte que l'ordinateur puisse communiquer avec. Dans cette optique, les fichier \texttt{test.py} et \texttt{communique.py} ont été développé. Ceux-ci, avec l'aide de la libraire \texttt{pyserial} ont permis d'envoyer sur le port série les messages à chiffrer et de les récupérer une fois le traitement terminé. \texttt{communique.py} lisant sur \texttt{stdin} les messages à chiffrer avant de
+les envoyer alors que \texttt{test.py} envoyait celui par défaut afin de vérifier que l'algorithme fonctionnait bien en sachant ce que celui-ci devait retourner et en le comparant avec ce qui fut renvoyé.\footnote{Il est à noter qu'un arduino peut mettre du temps à démarrer. Il a donc été décidé de, au lieu d'attendre un temps arbitrairement long et de soit patenter pour rien, soit d'envoyer le message à chiffrer trop tôt, d'envoyer un simple caractère (* en l'occurrence) à partir du
+moment ou l'arduino est prêt. Les deux scripts python attendent donc ce caractère avant de commencer.}
+
+Un \texttt{Makefile} fut aussi créé pour automatiser la compilation, le téléversement et le lancement du test. Une fois ceci terminé, il est devenu beaucoup plus aisé de modifier l'implémentation tout en vérifiant qu'elle reste fonctionnelle. 
+
+Maintenant que tout ceci a été fait, il est possible de transformer le code C en assembleur.
+Ceci à été réalisée en transformant toutes les fonction une par une.
+Elles ont été écrites dans des fichiers \texttt{.s} afin de pouvoir continuer d'utiliser l'éditeur de lien de \texttt{gcc} ce qui permet d'avoir les fonctions d'initialisations propres aux plateforme utilisée générée et donc d'avoir un code \texttt{AVR} portable sur d'autre microprocesseurs également.
+Les tests étant lancés à chaque nouvelle fonction transformée.
+
+Les outils utilises pour compiler et mettre à jour le code sur l'arduino sont respectivement \texttt{avr-gcc} et \texttt{avrdude}.
+
+L'implémentation de SchedAES fut fort similaire à l'exception qu'il a fallut ajouter de l'aléatoire.
+Le générateur d'aléatoire utilisé est le ``Générateur congruentiel linéaire'' dont la formule est :
+$$ X_{n+1} = (a \cdot X_n  + c) \text{ mod } m$$
+Avec comme valeur: $a=45$, $c=77$ et $m=2^8$. Le m a été choisi si petit pour rentrer sur un octet et pour pouvoir facilement calculer le modulo vu qu'il suffit de faire un ``et logique'' avec 255.
+Une plus grande analyse sur la génération d'aléatoire sera faite dans la section qui suit.
+
+
+\section{Discussion sur l'aléatoire}
+\label{sec:rand}
+%tu parles de ton random et du seed (qui est non sécure)
+
+\section{Conclusion}
 ce que ça a donné, ce que tu ferais si tu avais plus de temps
 ça pourrait être pas mal d'implémenter le random comme ça
 
