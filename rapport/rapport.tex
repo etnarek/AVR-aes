@@ -22,40 +22,43 @@
 \date{}
 
 \floatname{algorithm}{Algorithme}
+\setlength{\parskip}{0.5em}
 
 \begin{document}
 \maketitle
 
 \section{Introduction:}
-%c'est quoi aes, scedaes
-%c'est quoi le side-channel, pourquoi c'est important
-AES est un système de chiffrement symétrique grandement utilisé en informatique.
-Un algorithme de chiffrement symétrique est un algorithme qui transforme un message lisible en un chiffré de sorte qu'il ne soit pas lisible par toute personne n'ayant pas la clé de déchiffrement.
-On dit d'un tel algorithme qu'il est symétrique lorsque la même clé est utilisée lors du chiffrement et du déchiffrement. Un des avantage de AES est le fait que même avec un chiffré et son clair correspondant, il faut énormément de ressource pour récupérer la clé utilisée.\\
+La sécurité est une section importante de la Science informatique. De nombreux systèmes se font compromettre alors qu'ils contiennent souvent des informations sensibles. Pour éviter de voir ces secrets divulgués publiquement, il faut faire en sorte que des attaquants ne puissent accéder à ces informations.
 
+Ce papier parlera de l'implémentation d'AES et de SchedAES pour un système embarqué (atmega32p ou arduino). L'implémentation finale se fera en assembleur pour micro contrôler AVR.
 
+AES est un ``block-cipher'' ayant, dans notre cas, une clé et un bloc de 128 bits.
+La CNSS (Committee on National Security Systems) le considère comme suffisamment sécurisé pour chiffrer des information classifiée ``secret'' dans sa version 128 bits (\cite{policy2003no}).
+AES est un algorithme de chiffrement symétrique et donc la clé de chiffrement/déchiffrement doit rester bien secrète.
 
+Cependant, ce n'est pas suffisant dans notre cas puisque qu'un attaquant potentiel peut ouvrir le dispositif et faire une attaque par canaux auxiliaires sur celui-ci afin d'en récupérer la clé de chiffrement. Ce contre quoi AES n'est pas suffisamment robuste (\cite{Renauld2009}).
 
-SchedAES est une amélioration de AES ayant pour but de le rendre plus résistant aux attaques par canaux auxiliaires.\\
+Une attaque par canaux auxiliaires est une attaque où l'attaquant profite du fait qu'il aie accès au dispositif de chiffrement pour faire de l'analyse afin d'en récupérer les clés de chiffrement/déchiffrement.
+Pour se faire, il peut analyser le temps nécessaire à l'exécution de certaines opérations, analyse des émanations électromagnétique, analyse de la consommation,\ldots(\cite{zhou2005side})
 
-Malgré la robustesse de AES, celui-ci est vulnérable aux attaques par canaux auxiliaires.\\
-
-Les attaques par canaux auxiliaires sont des attaques ou la personne essayant de récupérer la clé de chiffrement regarde la consommation électrique, la température et le temps d'exécution de l'algorithme.
-Cela lui permet d'essayer de savoir quelle opération est en cours et peut lui révéler la partie de la clé en cours d'utilisation.\\
+Ce type d'attaque peut être appliquée sur des systèmes critique comme des Smart-Cards (\cite{chari1999cautionary}).
 
 Il existe plusieurs manières de protéger un algorithme face à ces attaques:
 \begin{itemize}
-    \item[Ajouter du bruit :] faire des opération en parallèle de sorte à modifier la consommation par exemple.
+    \item[Ajouter du bruit :] faire des opération en parallèle de sorte à modifier la consommation ou les émanations électromagnétique par exemple.
     \item[Masquer :] Ajouter un masque à la clé et au texte à chiffrer afin de rendre plus difficile la récupération de la clé originelle.
-    \item[Controler le temps d'exécution des opérations :] Changer la fréquence du processeur en cours d'exécution, sauter quelque cycle entre deux instructions ou changer l'ordre des instructions.\\
+    \item[Contrôler le temps d'exécution des opérations :] Changer la fréquence du processeur en cours d'exécution, sauter quelque cycle entre deux instructions ou changer l'ordre des instructions.
 \end{itemize}
 
-SchedAES utilise la dernière technique. Plus particulièrement, il change l'ordre des opération aléatoirement.\\
+Il existe plusieurs variantes d'AES visant à le rendre plus robuste face au attaques par canaux auxiliaires.
+Celle que nous allons voir ici est SchedAES.
+Celle-ci rend l'ordre dans lequel les différentes opérations d'AES sont exécutées aléatoire.
+Elle s'apparente au contremesures visant à contrôler le temps d'exécution des opérations.
 
 \section{Description des algorithmes:}
 \subsection{AES (ADVANCED ENCRYPTION STANDARD)}
 Considérons le texte à chiffrer comme une matrice de 16 octets (4 lignes et 4 colonne).
-AES se compose de quatre opération importante:\\
+AES se compose de quatre opération importante:
 \begin{itemize}
     \item[SubBytes :] substitution de chaque octet du texte à chiffrer grâce à une matrice de substitution.
     \item[ShiftRows :] Décalage de chaque ligne de la matrice à chiffrer de $i$ colonnes ($i$ étant le numéro de la ligne).
@@ -82,18 +85,20 @@ L'ordre de ces opérations est donné dans l'algorithme~\ref{alg:aes}.
         \STATE ShiftRows
         \STATE AddRoundKey
     \end{algorithmic}
-\end{algorithm}\\
+\end{algorithm}
 
 GenerateNextRoundKey étant le calcul de la clé pour le prochain AddRoundKey en fonction de la clé courante.
 Cette opération peut être faite qu'une seule fois au début en mettant les clé de tous les prochains tour en mémoire ou être fait à chaque tour de boucle.
 
+AES est définis dans\cite{fips197}
+
 \subsection{SchedAES}
-SchedAES utilise les même opérations que AES. Cepandnt, comme l'order des opérations est aléatoire, il garde en mémoire un set $\Theta$ des prochaines opérations qu'il peut exécuter.\\
+SchedAES utilise les même opérations que AES. Cepandnt, comme l'order des opérations est aléatoire, il garde en mémoire un set $\Theta$ des prochaines opérations qu'il peut exécuter.
 
 Lors de l'exécution de SchedAES, la prochaine opération à être appliquée à la matrice à chiffrer sera récupéré aléatoirement depuis ce set.
 Une fois l'opération terminée, $\Theta$ sera mis à jour en fonction de ce qui a déjà été réalisé.
 Ceci est fait tant que $\Theta$ n'est pas vide.
-Il sera vide une fois que toute les opérations nécessaires pour chiffrer le message seront finies.\\
+Il sera vide une fois que toute les opérations nécessaires pour chiffrer le message seront finies.
 
 Les opérations ici ne seront plus considérés sur la matrice entière mais sur chaque case, ligne ou colonne séparément en fonction de l'opération.
 
@@ -105,7 +110,7 @@ Les pré conditions sont les suivantes:
     \item[SubByte :] il est ajouté lorsque le AddRoundKey précédent sur la même case a été exécuté.
     \item[ShiftRow :] il n'est techniquement pas nécessaire de réellement exécuter cette opération. Ici, ShiftRow est ajouté à $\Theta$ lorsque touts les AddRoundKey sur la ligne correspondante ont été exécuté et que le ShiftRow précédent sur cette même ligne a aussi été exécuté.
     \item[MixColumn :] il est ajouté lorsque tous les SubByte appartenant à la colonne colonne impliquée ont été exécuté. Comme il se peut que tout les ShiftRows n'ont pas été exécutés, la colonne ou il faut vérifier le subByte n'est pas toujours celle sur laquelle le MixColumn va s'appliquer. Il faut calculer le décalage.
-    \item[AddRoundKey :] ils sont ajoutés par 4 pou une colonne lorsque qu'un MixColumn a été exécuté.Il est aussi ajouté après un subByte lorsque qu'on est au 10\up{ème} tour pour celui-ci.\\
+    \item[AddRoundKey :] ils sont ajoutés par 4 pou une colonne lorsque qu'un MixColumn a été exécuté.Il est aussi ajouté après un subByte lorsque qu'on est au 10\up{ème} tour pour celui-ci.
 \end{itemize}
 
 Pour savoir l'état d'avancement, il faudra conserver en mémoire une matrice d'état pour chacune de ces opérations pour savoir si elles ont été exécutées.
