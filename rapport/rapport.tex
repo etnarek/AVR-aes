@@ -152,10 +152,27 @@ $$ X_{n+1} = (a \cdot X_n  + c) \text{ mod } m$$
 Avec comme valeur: $a=45$, $c=77$ et $m=2^8$. Le m a été choisi si petit pour rentrer sur un octet et pour pouvoir facilement calculer le modulo vu qu'il suffit de faire un ``et logique'' avec 255.
 Une plus grande analyse sur la génération d'aléatoire sera faite dans la section qui suit.
 
+Comme nous pouvons le voir, le générateur d'aléatoire se base sur un nombre généré précédemment pour en créer un nouveau.
+Il faut donc un ``seed'' (une valeur de départ) pour que celui-ci fonctionne.
+Au début du développement, le seed a été mis à une valeur arbitraire en attendant de le générer d'une manière aléatoire.
+Par la suite, les entrées analogiques de l'arduino ont été utilisée pour créer un seed aléatoirement.
+En effet, lorsqu'une entrée analogique est dite ``flottante'' (n'est pas relié à un circuit), elle renvoie des valeurs aléatoires en fonction des champs électromagnétique dans les environs.
 
 \section{Discussion sur l'aléatoire}
 \label{sec:rand}
-%tu parles de ton random et du seed (qui est non sécure)
+Le générateur d'aléatoire utilisé est le Générateur congruentiel linéaire car il est suffisamment rapide et pas trop complexe à implémenter.
+Cependant, ce n'est pas le meilleur car il n'est pas suffisamment sécurisé pour gérer de la cryptographie (\cite{stern1987secret} et \cite{Plumstead1983}).
+Il aurait été meilleur d'utiliser des algorithmes comme l'algorithme de \cite{blum1984generate} mais qui est beaucoup plus lent à cause de l'exponentielle.
+De plus, il serait intéressant de vérifier que ces algorithme soient bien résistant aux attaques par canaux auxiliaires.
+Lire une valeur aléatoirement sur une entrée analogique n'est conseillé car il est possible de faire en sorte que celle-ci renvoie toujours la même valeur en la reliant à la terre par exemple.
+
+Le seed est aussi à prendre en compte lors de la génération d'aléatoire.
+En effet, si on fixais le seed à une valeur arbitraire dans le code pour l'arduino, celui-ci retournera à cette même valeur à chaque redémarrage de l'arduino.
+Cela fait qu'à chaque fois, les instructions seront exécutées dans le même ordre.
+La technique de lire sur une entrée analogique le seed (comme utilisé ici) n'est pas conseillé pour les même raisons que précédemment, il est aisé de choisir la valeur voulue.
+La dernière possibilité évoquée dans cet article est de choisir aléatoirement une première valeur pour le seed et de la mettre dans l'EEPROM (Electrically Erasable Programmable Read-Only Memory) de l'arduino. Par la suite, à chaque génération d'un nouveau nombre, on modifie l'EEPROM de l'arduino avec celui-ci comme ça il est persistant entre chaque redémarrage.
+Il y a juste lorsqu'on met la valeur pour la première fois dans l'arduino qu'il faut faire attention.
+Cependant, nous considérons que l'attaquant n'y a pas accès à ce moment sinon il aurait accès à la clé de chiffrement par la même occasion.
 
 \section{Conclusion}
 ce que ça a donné, ce que tu ferais si tu avais plus de temps
