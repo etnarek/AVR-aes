@@ -8,6 +8,8 @@
 \usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage{csquotes}
+\usepackage[]{algorithmic}
+\usepackage[]{algorithm}
 
 \author{Romain \textsc{Fontaine}$^{1}$\\
     Superviseurs : Olivier \textsc{Markowitch}, Stephane Fernandes \textsc{Medeiros}\\
@@ -18,12 +20,87 @@
 \title{Implémentation en \texttt{AVR} d'un algorithme de chiffrement :\\ \textsc{Schedaes}}
 \date{}
 
+\floatname{algorithm}{Algorithme}
+
 \begin{document}
 \maketitle
 
 \section{Introduction:}
-c'est quoi aes, scedaes
-c'est quoi le side-channel, pourquoi c'est important
+\subsection{AES (ADVANCED ENCRYPTION STANDARD)}
+AES est un système de chiffrement symétrique grandement utilisé en informatique.
+Un algorithme de chiffrement symétrique est un algorithme qui transforme un message lisible en un chiffré de sorte qu'il ne soit pas lisible par toute personne n'ayant pas la clé de déchiffrement.
+On dit d'un tel algorithme qu'il est symétrique lorsque la même clé est utilisée lors du chiffrement et du déchiffrement. Un des avantage de AES est le fait que même avec un chiffré et son clair correspondant, il faut énormément de ressource pour récupérer la clé utilisée.\\
+
+Considérons le texte à chiffrer comme une matrice de 16 octets (4 lignes et 4 colonne).
+AES se compose de quatre opération importante:\\
+\begin{itemize}
+    \item[SubBytes :] substitution de chaque octet du texte à chiffrer grâce à une matrice de substitution.
+    \item[ShiftRows :] Décalage de chaque ligne de la matrice à chiffrer de $i$ colonnes ($i$ étant le numéro de la ligne).
+    \item[MixColumns :] Multiplication des éléments de chaque colonne entre eux\footnote{Cette opération est plus complexe qu'une simple multiplication, il est conseillé de lire \cite{fips197} pour mieux l'appréhender.}.
+    \item[AddRoundKey :] Ou exclusif entre la clé de chiffrement et le texte pour chacune des case de la matrice. La clé étant modifié à chaque tour de l'algorithme.
+\end{itemize}
+
+L'ordre de ces opérations est donné dans l'algorithme~\ref{alg:aes}.
+\begin{algorithm}
+    \caption{AES}
+    \label{alg:aes}
+    \begin{algorithmic}[1]
+        \REQUIRE texte à chiffrer, clé de chiffrement
+        \STATE AddRoundKey
+        \STATE GenerateNextRoundKey
+        \FOR{$i=0 \rightarrow 9$}
+            \STATE SubBytes
+            \STATE ShiftRows
+            \STATE MixColumns
+            \STATE AddRoundKey
+            \STATE GenerateNextRoundKey
+        \ENDFOR
+        \STATE SubBytes
+        \STATE ShiftRows
+        \STATE AddRoundKey
+    \end{algorithmic}
+\end{algorithm}\\
+
+GenerateNextRoundKey étant le calcul de la clé pour le prochain AddRoundKey en fonction de la clé courante.
+Cette opération peut être faite qu'une seule fois au début en mettant les clé de tous les prochains tour en mémoire ou être fait à chaque tour de boucle.
+
+\subsection{SchedAES}
+SchedAES est une amélioration de AES ayant pour but de le rendre plus résistant aux attaques par canaux auxiliaires.\\
+
+Malgré la robustesse de AES, celui-ci est vulnérable aux attaques par canaux auxiliaires.\\
+
+Les attaques par canaux auxiliaires sont des attaques ou la personne essayant de récupérer la clé de chiffrement regarde la consommation électrique, la température et le temps d'exécution de l'algorithme.
+Cela lui permet d'essayer de savoir quelle opération est en cours et peut lui révéler la partie de la clé en cours d'utilisation.\\
+
+Il existe plusieurs manières de protéger un algorithme face à ces attaques:
+\begin{itemize}
+    \item[Ajouter du bruit :] faire des opération en parallèle de sorte à modifier la consommation par exemple.
+    \item[Masquer :] Ajouter un masque à la clé et au texte à chiffrer afin de rendre plus difficile la récupération de la clé originelle.
+    \item[Controler le temps d'execussion des opérations :] Changer la fréquence du processeur en cours d'exécution, sauter quelque cycle entre deux instructions ou changer l'ordre des instructions.\\
+\end{itemize}
+
+SchedAES utilise la dernière technique. Plus particulièrement, il change l'ordre des opération aléatoirement.\\
+
+Pour ce faire, il a en mémoire un set $\Theta$ des prochaines opérations qu'il peut exécuter.
+On prend ensuite une des prochaines opération aléatoirement, on l'exécute et on met $\Theta$ à jour en fonction de cette opération.
+Ceci est fait tant que $\Theta$ n'est pas vide, auquel cas, on a terminé.\\
+
+Les opérations ici ne seront plus considérés sur la matrice entière mais sur chaque case, ligne ou colonne séparément en fonction de l'opération.
+
+On ajoute une opération à $\Theta$ lorsque certaines pré conditions sont validées.
+$\Theta$ initialement rempli avec l'opération AddRoundKey pour chacune des cases.
+
+Les pré conditions sont les suivantes:
+\begin{itemize}
+    \item[SubByte :] il est ajouté lorsque le AddRoundKey précédent sur la même case a été exécuté.
+    \item[ShiftRow :] il n'est techniquement pas nécessaire de réellement exécuter cette opération. Ici, ShiftRow est ajouté à $\Theta$ lorsque touts les AddRoundKey sur la ligne correspondante ont été exécuté et que le ShiftRow précédent sur cette même ligne a aussi été exécuté.
+    \item[MixColumn :] il est ajouté lorsque tous les SubByte appartenant à la colonne colonne impliquée ont été exécuté. Comme il se peut que tout les ShiftRows n'ont pas été exécutés, la colonne ou il faut vérifier le subByte n'est pas toujours celle sur laquelle le MixColumn va s'appliquer. Il faut calculer le décalage.
+    \item[AddRoundKey :] ils sont ajoutés par 4 pou une colonne lorsque qu'un MixColumn a été exécuté.Il est aussi ajouté après un subByte lorsque qu'on est au 10\up{ème} tour pour celui-ci.\\
+\end{itemize}
+
+Pour savoir l'état d'avancement, il faudra conserver en mémoire une matrice d'état pour chacune de ces opérations pour savoir si elles ont été exécutées.
+%c'est quoi aes, scedaes
+%c'est quoi le side-channel, pourquoi c'est important
 
 \section{Présentation de la solution}
 comment t'as bossé (c -> asm, tests en pytons, bla blabla)
@@ -32,4 +109,8 @@ tu parles de ton random et du seed (qui est non sécure)
 \section{conclusion}
 ce que ça a donné, ce que tu ferais si tu avais plus de temps
 ça pourrait être pas mal d'implémenter le random comme ça
+
+\footnotesize
+\bibliographystyle{apalike}
+\bibliography{biblio}
 \end{document}
