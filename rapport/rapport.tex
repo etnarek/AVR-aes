@@ -8,9 +8,11 @@
 \usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage{csquotes}
+\usepackage{dirtytalk}
 \usepackage[]{algorithmic}
 \usepackage[]{algorithm}
 \usepackage{hyperref}
+\usepackage{attrib}
 
 \author{Romain \textsc{Fontaine}$^{1}$\\
     Superviseurs : Olivier \textsc{Markowitch}, Stephane Fernandes \textsc{Medeiros}\\
@@ -27,10 +29,19 @@
 \begin{document}
 \maketitle
 
+\begin{abstract}
+    La sécurité informatique est utilisée partout et devient même présente dans des systèmes embarqués.
+    Le problème avec ces systèmes c'est qu'ils peuvent être analysés par des personnes voulant récupérer les information confidentielles dessus.
+    Nous allons donc commencer par analyser AES en l'implémentant sur arduino.
+    Par la suite nous allons voir qu'AES n'est pas résistant à des attaques par canaux auxiliaires.
+    Nous allons donc voir le fonctionnement et implémenter SchedAES, un algorithme résistant mieux à ce style d'attaque.
+    Nous allons terminer par une analyse de l'utilisation d'aléatoire dans le cadre de la cryptographie.
+\end{abstract}
+
 \section{Introduction:}
 La sécurité est une section importante de la Science informatique. De nombreux systèmes se font compromettre alors qu'ils contiennent souvent des informations sensibles. Pour éviter de voir ces secrets divulgués publiquement, il faut faire en sorte que des attaquants ne puissent accéder à ces informations.
 
-Ce papier parlera de l'implémentation d'AES et de SchedAES pour un système embarqué (atmega328p ou arduino). L'implémentation finale se fera en assembleur pour micro contrôler AVR.
+Ce papier parlera de l'implémentation d'AES et de SchedAES pour un système embarqué (atmega328p ou arduino). L'implémentation finale se fera en assembleur pour micro-contrôler AVR.
 
 AES est un ``block-cipher'' ayant, dans notre cas, une clé et un bloc de 128 bits.
 La CNSS (Committee on National Security Systems) le considère comme suffisamment sécurisé pour chiffrer des information classifiée ``secret'' dans sa version 128 bits (\cite{policy2003no}).
@@ -39,7 +50,7 @@ AES est un algorithme de chiffrement symétrique et donc la clé de chiffrement/
 Cependant, ce n'est pas suffisant dans notre cas puisque qu'un attaquant potentiel peut ouvrir le dispositif et faire une attaque par canaux auxiliaires sur celui-ci afin d'en récupérer la clé de chiffrement. Ce contre quoi AES n'est pas suffisamment robuste (\cite{Renauld2009}).
 
 Une attaque par canaux auxiliaires est une attaque où l'attaquant profite du fait qu'il aie accès au dispositif de chiffrement pour faire de l'analyse afin d'en récupérer les clés de chiffrement/déchiffrement.
-Pour se faire, il peut analyser le temps nécessaire à l'exécution de certaines opérations, analyse des émanations électromagnétique, analyse de la consommation,\ldots(\cite{zhou2005side})
+Pour se faire, il peut analyser le temps nécessaire à l'exécution de certaines opérations, analyser les émanations électromagnétique, analyser la consommation électrique,\ldots(\cite{zhou2005side})
 
 Ce type d'attaque peut être appliquée sur des systèmes critique comme des Smart-Cards (\cite{chari1999cautionary}).
 
@@ -103,7 +114,7 @@ Il sera vide une fois que toute les opérations nécessaires pour chiffrer le me
 Les opérations ici ne seront plus considérés sur la matrice entière mais sur chaque case, ligne ou colonne séparément en fonction de l'opération.
 
 On ajoute une opération à $\Theta$ lorsque certaines pré conditions sont validées.
-$\Theta$ initialement rempli avec l'opération AddRoundKey pour chacune des cases.
+$\Theta$ est initialement rempli avec l'opération AddRoundKey pour chacune des cases.
 
 Les pré conditions sont les suivantes:
 \begin{itemize}
@@ -177,9 +188,18 @@ Il y a juste lorsqu'on met la valeur pour la première fois dans l'arduino qu'il
 Cependant, nous considérons que l'attaquant n'y a pas accès à ce moment sinon il aurait accès à la clé de chiffrement par la même occasion.
 
 \section{Conclusion}
-ce que ça a donné, ce que tu ferais si tu avais plus de temps
-ça pourrait être pas mal d'implémenter le random comme ça
+Lors de la création d'un algorithme de chiffrement, il faut faire attention à ce que chaque composante soit suffisamment sécurisé et puisse résister à de potentiel attaquants.
+Dans le but de le rendre résistant au attaques par canaux auxiliaires, il faut faire attention à ce que les implémentations ne renvoient pas d'indice sur ce qu'ils sont en train d'exécuter.
+De plus, lorsque de l'aléatoire est utilisé, il faut aussi faire attention à ce qu'il soit aussi sécurisé sinon il pourrais compromettre l'algorithme le chiffrement.
+En sécurité, la maxime \say{La résistance d'une chaîne se mesure à son maillon le plus faible.}
+est souvent observée. L'aboutissement des experts en cryptographie et en sécurité est de faire en sorte que ce maillon n'existe pas. Car, dans le cas contraire, c'est toute la chaîne qui est compromise.
 
+Ce projet fut for enrichissant justement sur comment essayer de rendre un algorithme résistant et sur comment implémenter ce genre d'algorithme en langage bas niveau et donc de pouvoir les utiliser sur des systèmes embarqués tout en faisant attention à ne pas laisser fuiter les informations permettant de reconstruire des clé de chiffrement dans ce cas ci.
+
+\begin{quote}
+    The quieter you become, the more you are able to hear
+  \attrib{Kali Linux}
+\end{quote}
 
 \footnotesize
 \bibliographystyle{apalike}
